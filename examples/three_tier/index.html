@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODB three-account quote</title>
+<style>
+body { max-width: 46rem; margin: 4rem auto; padding: 1rem; font: 18px system-ui; }
+label { display: block; margin: 1rem 0; }
+input, button { font: inherit; padding: .4rem; }
+pre { padding: 1rem; background: #edf2f7; white-space: pre-wrap; }
+</style>
+<h1>Three accounts. One quote.</h1>
+<p>Private S3 + CloudFront / business Lambda / network-owned subnet fixtures.</p>
+<p><strong>Local demo:</strong> the API relay and shared-subnet mapping are explicit
+shim fixtures, not native cross-account CloudFront or RAM networking.</p>
+<form id="quote">
+  <label>Quantity <input name="quantity" type="number" value="3" min="1" max="100"></label>
+  <label>Unit price (cents) <input name="unit_cents" type="number" value="1299" min="1"></label>
+  <label>Discount (%) <input name="discount_percent" type="number" value="10" min="0" max="100"></label>
+  <button>Calculate in application account</button>
+</form>
+<pre id="result" aria-live="polite">Ready.</pre>
+<script>
+document.querySelector("#quote").addEventListener("submit", async event => {
+  event.preventDefault();
+  const result = document.querySelector("#result");
+  try {
+    const query = new URLSearchParams(new FormData(event.target));
+    const response = await fetch(`/api/quote?${query}`);
+    const body = await response.json();
+    result.textContent = JSON.stringify({status: response.status, ...body}, null, 2);
+  } catch (error) {
+    result.textContent = `Request failed: ${error.message}`;
+  }
+});
+</script>
+</html>

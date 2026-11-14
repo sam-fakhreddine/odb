@@ -1,0 +1,16 @@
+.venv/
+*.egg-info/
+build/
+dist/
+*.rpm
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.DS_Store
+.env
+.env.*
+!.env.example
+result.json
+native-result.json
+SHA256SUMS
+.tokensave/

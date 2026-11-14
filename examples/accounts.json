@@ -1,0 +1,16 @@
+{
+  "region": "us-east-1",
+  "namespace": "emulator-shim",
+  "accounts": {
+    "app": {"account_id": "111111111111", "port": 9297},
+    "security": {"account_id": "222222222222", "port": 9298},
+    "audit": {"account_id": "333333333333", "port": 9299}
+  },
+  "roles": {
+    "SecurityAccess": {"source": "security", "target": "app"}
+  },
+  "bridges": {
+    "events": {"source": "audit", "target": "security"},
+    "evidence": {"source": "app", "target": "security"}
+  }
+}

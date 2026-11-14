@@ -1,0 +1,13 @@
+{
+  "namespace": "odb-three-tier",
+  "region": "us-east-1",
+  "accounts": {
+    "web": {"account_id": "111111111111", "port": 9297},
+    "application": {"account_id": "222222222222", "port": 9298},
+    "network": {"account_id": "333333333333", "port": 9299}
+  },
+  "roles": {
+    "BusinessOrigin": {"source": "web", "target": "application"},
+    "SharedNetwork": {"source": "application", "target": "network"}
+  }
+}
