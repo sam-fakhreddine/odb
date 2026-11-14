@@ -61,3 +61,10 @@ Never reuse a published version or move its tag; fix mistakes in a new release.
 Actions are SHA-pinned, tokens are read-only except the tag-only draft-release
 job, and dependency updates are proposed by Dependabot. There is no automatic
 PyPI publishing, AWS authentication or emulator download.
+
+Dependabot is the sole dependency updater; the repository disables overlapping
+Renovate runs. Weekly minor/patch version updates are grouped by ecosystem,
+while major updates and security updates remain separate review items.
+Updates are not automatically merged. Changing the supported Python matrix or
+the package-build interpreter is a deliberate compatibility decision, not a
+routine dependency-range update.
