@@ -2,6 +2,16 @@
 
 All notable changes are recorded here. Releases follow Semantic Versioning.
 
+## Unreleased
+
+### Maintenance
+
+- Permit setuptools 84 and Twine 7 while retaining the existing lower bounds.
+- Use Dependabot as the sole updater, group weekly minor/patch version updates
+  by ecosystem and keep major/security updates separately reviewable.
+- Retain the Python 3.12 package-build baseline and Python 3.11-3.14 test matrix.
+  Published v0.1.0 artifacts and its tag are unchanged.
+
 ## 0.1.0 - 2026-11-14
 
 Initial MIT-licensed release of ODB (Ol' Dirty Bridge).
