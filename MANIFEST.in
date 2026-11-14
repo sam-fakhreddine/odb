@@ -1,4 +1,5 @@
 include LICENSE README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md Containerfile
+recursive-include docs *.md *.mmd *.json *.png *.svg *.pdf *.txt
 recursive-include examples *.json *.md *.py *.html
 recursive-include tests *.py
 global-exclude *.py[cod]

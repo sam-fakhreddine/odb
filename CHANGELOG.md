@@ -4,6 +4,12 @@ All notable changes are recorded here. Releases follow Semantic Versioning.
 
 ## Unreleased
 
+### Documentation
+
+- Add two architecture infographics covering ODB/native-emulator interaction
+  and the three-account example, with explicit fixture boundaries and native
+  failure diagnostics. Include PNG, SVG, PDF and editable Mermaid/design pairs.
+
 ### Maintenance
 
 - Permit setuptools 84 and Twine 7 while retaining the existing lower bounds.

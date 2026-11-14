@@ -1,0 +1,37 @@
+flowchart LR
+    %% Boundaries are local processes, not real AWS accounts.
+    subgraph LocalHost["Your Local Test Host"]
+        subgraph Inputs["Test Intent"]
+            Tests["Your Tests or CLI<br/>Python API or odb"]
+            Manifest["Account Manifest<br/>Names, logical IDs, ports, Region"]
+        end
+        subgraph ODB["ODB - Ol' Dirty Bridge"]
+            Harness["Harness<br/>Validate inventory and own lifecycle"]
+            Bridges["Explicit Bridges<br/>Role selection, event relay, object transfer"]
+            Clients["Per-Runtime SDK Clients<br/>Signed HTTPS and private-CA verification"]
+        end
+        subgraph Runtimes["Independent Native Processes"]
+            AppRuntime["Application Runtime<br/>127.0.0.1:9297"]
+            SecurityRuntime["Security Runtime<br/>127.0.0.1:9298"]
+            AuditRuntime["Audit Runtime<br/>127.0.0.1:9299"]
+        end
+    end
+
+    %% Native SDK requests and local control flow.
+    Tests call@-->|call| Harness
+    Manifest declare@-->|declare| Harness
+    Harness select@-->|select named runtime| Clients
+    Harness adapt@-.->|only declared routes| Bridges
+    Bridges dispatch@-.->|invoke destination API| Clients
+    Clients app@-->|signed HTTPS| AppRuntime
+    Clients security@-->|signed HTTPS| SecurityRuntime
+    Clients audit@-->|signed HTTPS| AuditRuntime
+
+    classDef pipeline fill:#f7faff,stroke:#1760ed,color:#111c2a
+    classDef crossing fill:#fffaf7,stroke:#f45c1c,color:#111c2a
+    classDef security fill:#f7fcfc,stroke:#087b89,color:#111c2a
+    classDef compute fill:#fffbf6,stroke:#ed8506,color:#111c2a
+    class Harness pipeline
+    class Bridges crossing
+    class Clients security
+    class AppRuntime,SecurityRuntime,AuditRuntime compute

@@ -5,6 +5,13 @@ no forensic application, private packages, deployment, or real AWS credentials.
 The account IDs below are logical harness metadata; every native process still
 reports `000000000000`.
 
+![Three logical accounts with native emulator resources and two explicitly labeled local fixture seams.](../../docs/diagrams/architecture_2_flowchart_three_account_example.png)
+
+The solid paths are native operations; orange dashed paths are explicit
+fixtures. The purple dashed path records Lambda's `VpcConfig`, not packet
+connectivity. [Vector/PDF versions and editable sources](../../docs/diagrams/README.md)
+are available.
+
 | Logical account | Native resources | Proven locally |
 | --- | --- | --- |
 | Web `111111111111` | Private S3 site, CloudFront distribution, S3/Lambda OACs | Actual edge HTTP returns the uploaded HTML byte-for-byte; deleting the object returns 404; removing the bucket grant returns 403 |

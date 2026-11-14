@@ -1,0 +1,42 @@
+flowchart LR
+    %% The local front door and fixtures are outside all emulator accounts.
+    subgraph Demo["Local Demo Host - Explicit Adapters"]
+        FrontDoor["Loopback Front Door<br/>Browser or tests at :9400"]
+        ApiRelay["API Transport Fixture<br/>BusinessOrigin route"]
+        SubnetFixture["Subnet Mapping Fixture<br/>SharedNetwork route"]
+    end
+
+    subgraph Accounts["Three Independent Emulator Processes"]
+        subgraph Web["Web | 111111111111"]
+            CloudFront["CloudFront + OAC<br/>Native edge HTTP listener"]
+            Site["Private S3 Site<br/>Exact HTML byte readback"]
+        end
+        subgraph Application["Application | 222222222222"]
+            Business["Business Lambda<br/>Packaged Python runs natively"]
+            Participant["Participant VPC Fixtures<br/>Separately created subnets and SG"]
+        end
+        subgraph Network["Network | 333333333333"]
+            RamShare["RAM Declaration<br/>Subnet resources and app principal"]
+            OwnerVpc["Owner VPC + Subnets<br/>Two AZs; actual native records"]
+        end
+    end
+
+    %% Successful adapted request flow. No native cross-process route is invented.
+    FrontDoor static@-->|static paths| CloudFront
+    CloudFront read@-->|OAC reads| Site
+    FrontDoor api@-.->|/api/quote| ApiRelay
+    ApiRelay check@-.->|preflight before invoke| SubnetFixture
+    ApiRelay invoke@-->|native Lambda Invoke| Business
+    SubnetFixture ram@-->|read declared associations| RamShare
+    SubnetFixture owner@-->|read owner records| OwnerVpc
+    SubnetFixture map@-.->|map and verify CIDR / AZ| Participant
+    Business config@-.->|declares VpcConfig only| Participant
+
+    classDef crossing fill:#fffaf7,stroke:#f45c1c,color:#111c2a
+    classDef pipeline fill:#f7faff,stroke:#1760ed,color:#111c2a
+    classDef data fill:#f7fbf4,stroke:#328219,color:#111c2a
+    classDef state fill:#fbf8ff,stroke:#8055d9,color:#111c2a
+    class ApiRelay,SubnetFixture crossing
+    class FrontDoor,CloudFront pipeline
+    class Site,OwnerVpc data
+    class Participant,RamShare state

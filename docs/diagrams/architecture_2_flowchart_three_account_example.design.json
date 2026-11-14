@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "preset": "aws-architecture",
+  "header": {
+    "title": "Three Accounts. Two Explicit Seams.",
+    "subtitle": "The ODB quote example: native components, adapted API transport, and checked subnet fixtures.",
+    "mark": "ODB",
+    "badges": ["Local three-tier demo", "Logical account IDs", "Not AWS packet-flow proof"]
+  },
+  "groups": {
+    "Demo": {"role": "crossing", "layout": "grid", "columns": 3, "row": 0, "column": 0, "icon": "merge"},
+    "Accounts": {"layout": "grid", "columns": 3, "chrome": "none", "row": 1, "column": 0},
+    "Web": {"role": "pipeline", "layout": "grid", "columns": 1, "row": 0, "column": 0, "icon": "route"},
+    "Application": {"role": "compute", "layout": "grid", "columns": 1, "row": 0, "column": 1, "icon": "code"},
+    "Network": {"role": "data", "layout": "grid", "columns": 1, "row": 0, "column": 2, "icon": "grid"}
+  },
+  "nodes": {
+    "FrontDoor": {"role": "pipeline", "icon": "server", "width": 390, "row": 0, "column": 0, "details": ["Static requests reach native CloudFront"]},
+    "ApiRelay": {"role": "crossing", "icon": "arrows", "width": 390, "row": 0, "column": 1, "details": ["Forwards inputs, nonce and native result"]},
+    "SubnetFixture": {"role": "crossing", "icon": "merge", "width": 390, "row": 0, "column": 2, "details": ["Creates and checks mirrors; not shared networking"]},
+    "CloudFront": {"role": "pipeline", "icon": "route", "width": 390, "row": 0, "column": 0, "details": ["OAC read; absent origin grant -> HTTP 403"]},
+    "Site": {"role": "data", "icon": "folder", "width": 390, "row": 1, "column": 0, "details": ["SHA-256 checked; missing key -> HTTP 404"]},
+    "Business": {"role": "compute", "icon": "code", "width": 390, "row": 0, "column": 0, "details": ["Computed totals; invalid input -> HTTP 400"]},
+    "Participant": {"role": "state", "icon": "grid", "width": 390, "row": 1, "column": 0, "details": ["Mirrored CIDRs/AZs, not the owner's physical VPC"]},
+    "RamShare": {"role": "state", "icon": "document", "width": 390, "row": 0, "column": 0, "details": ["Native associations may remain ASSOCIATING"]},
+    "OwnerVpc": {"role": "data", "icon": "grid", "width": 390, "row": 1, "column": 0, "details": ["IDs/CIDRs checked; missing owner blocks request"]}
+  },
+  "edges": {
+    "static": {"role": "pipeline"},
+    "read": {"role": "data"},
+    "api": {"role": "crossing"},
+    "check": {"role": "crossing"},
+    "invoke": {"role": "compute"},
+    "ram": {"role": "data"},
+    "owner": {"role": "data"},
+    "map": {"role": "crossing"},
+    "config": {"role": "state"}
+  },
+  "legend": [
+    {"role": "pipeline", "label": "Solid: real native operation"},
+    {"role": "crossing", "label": "Orange dashed: explicit fixture", "dashed": true},
+    {"role": "state", "label": "Purple dashed: configuration, not packets", "dashed": true}
+  ],
+  "callouts": [
+    {"title": "Native Results", "role": "success", "icon": "database", "details": ["HTML bytes, code ZIP and computed totals are checked."]},
+    {"title": "Explicit Fixtures", "role": "crossing", "icon": "arrows", "details": ["API transport and mirrored subnet configuration are adapter code."]},
+    {"title": "Strict Native Stays Red", "role": "expert", "icon": "shield", "details": ["1.0.322: cross-process CF/Lambda -> 502; RAM invisible; invalid subnet accepted."]}
+  ],
+  "notes": [
+    "Strict native mode stays red on emulator 1.0.322: cross-process CloudFront/Lambda URL -> 502; RAM subnets not visible; invalid Lambda subnet accepted.",
+    "Adapted PASS proves routing, checked native state and real handler output. It does not prove real AWS IAM, ENIs, shared networking or security-group enforcement."
+  ]
+}

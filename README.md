@@ -20,6 +20,26 @@ AWS responses. Declared role selection, event relay, and S3 fixture transfer are
 explicit simulations. They do not prove IAM, STS trust, KMS/bucket policy,
 Security Hub/EventBridge delivery, snapshot sharing, or physical isolation.
 
+## How it works
+
+![ODB routes tests through explicit bridges and per-runtime SDK clients to independent AWS Emulator processes.](docs/diagrams/architecture_1_flowchart_emulator_interaction.png)
+
+Each runtime owns its service state and generated credentials. ODB selects the
+runtime and performs only declared cross-process operations; it does not turn
+logical account IDs into native AWS accounts.
+
+![Three-account example showing native CloudFront, S3 and Lambda operations alongside explicit API transport and subnet-mapping fixtures.](docs/diagrams/architecture_2_flowchart_three_account_example.png)
+
+The [three-account example](examples/three_tier/README.md) checks native HTML
+bytes and computed Lambda results, then deliberately breaks routes, resources
+and grants. On emulator 1.0.322, strict native mode still fails for cross-process
+CloudFront/Lambda forwarding, RAM subnet visibility and missing-subnet
+validation. The fixtures do not prove AWS authorization or packet connectivity.
+
+[Vector diagrams, PDFs, editable Mermaid/design sources and rendering notes](docs/diagrams/README.md)
+are included. These diagrams describe the source on `main`; the existing
+v0.1.0 release assets are unchanged.
+
 ## Setup
 
 Get the versioned source (including examples) from

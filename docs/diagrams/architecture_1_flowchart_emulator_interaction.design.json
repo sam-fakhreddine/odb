@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "preset": "aws-architecture",
+  "header": {
+    "title": "ODB + AWS Emulator",
+    "subtitle": "One test harness. Independent service state. Explicit cross-process bridges.",
+    "mark": "ODB",
+    "badges": ["Ol' Dirty Bridge", "Local only", "No production credentials"]
+  },
+  "groups": {
+    "LocalHost": {"layout": "grid", "columns": 3, "chrome": "none"},
+    "Inputs": {"role": "neutral", "layout": "grid", "columns": 1, "row": 0, "column": 0, "icon": "code"},
+    "ODB": {"role": "pipeline", "layout": "grid", "columns": 1, "row": 0, "column": 1, "icon": "merge"},
+    "Runtimes": {"role": "compute", "layout": "grid", "columns": 1, "row": 0, "column": 2, "icon": "server"}
+  },
+  "nodes": {
+    "Tests": {"role": "neutral", "icon": "code", "width": 300, "row": 0, "column": 0, "details": ["Assert actual responses, bytes and failures"]},
+    "Manifest": {"role": "neutral", "icon": "document", "width": 300, "row": 1, "column": 0, "details": ["Any declared account count", "Routes are opt-in"]},
+    "Harness": {"role": "pipeline", "icon": "gear", "width": 340, "row": 0, "column": 0, "details": ["Starts and stops owned containers", "No image pulls; temporary credentials cleaned"]},
+    "Bridges": {"role": "crossing", "icon": "arrows", "width": 340, "row": 1, "column": 0, "details": ["Simulated account transitions", "Transfer receipts track attempted/completed"]},
+    "Clients": {"role": "security", "icon": "shield", "width": 340, "row": 2, "column": 0, "details": ["Generated credentials for that process", "Loopback guard; proxies and ambient profiles off"]},
+    "AppRuntime": {"role": "compute", "icon": "server", "width": 340, "row": 0, "column": 0, "details": ["Own native S3 / SQS / STS state", "Native account: 000000000000"]},
+    "SecurityRuntime": {"role": "compute", "icon": "server", "width": 340, "row": 1, "column": 0, "details": ["Own native S3 / SQS / STS state", "Native account: 000000000000"]},
+    "AuditRuntime": {"role": "compute", "icon": "server", "width": 340, "row": 2, "column": 0, "details": ["Own native S3 / SQS / STS state", "Native account: 000000000000"]}
+  },
+  "edges": {
+    "call": {"role": "pipeline"},
+    "declare": {"role": "pipeline"},
+    "select": {"role": "pipeline"},
+    "adapt": {"role": "crossing"},
+    "dispatch": {"role": "crossing"},
+    "app": {"role": "security"},
+    "security": {"role": "security"},
+    "audit": {"role": "security"}
+  },
+  "callouts": [
+    {"title": "Real Emulator Operations", "role": "success", "icon": "database", "details": ["Requests reach native APIs; results are not canned."]},
+    {"title": "Honest Simulation Boundary", "role": "crossing", "icon": "route", "details": ["Logical routing is not AWS IAM or cross-account security."]},
+    {"title": "Own The Lifecycle", "role": "security", "icon": "shield", "details": ["Start, stop and clean up owned runtimes; report cleanup errors."]}
+  ],
+  "legend": [
+    {"role": "security", "label": "Solid: native SDK request"},
+    {"role": "crossing", "label": "Dashed: explicit bridge", "dashed": true},
+    {"role": "neutral", "label": "Logical identity always includes its runtime"}
+  ],
+  "notes": [
+    "Example inventory: application 111111111111 / security 222222222222 / audit 333333333333. These IDs do not rewrite native responses.",
+    "Podman is the verified engine. Separate processes are not a security sandbox; real AWS authorization and physical isolation remain unproven."
+  ]
+}
