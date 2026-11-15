@@ -8,7 +8,12 @@ from unittest.mock import patch
 
 from aws_emulator_shim import Harness
 from aws_emulator_shim.__main__ import main
-from aws_emulator_shim.contracts import Manifest, ManifestError, load_manifest, parse_manifest
+from aws_emulator_shim.contracts import (
+    Manifest,
+    ManifestError,
+    load_manifest,
+    parse_manifest,
+)
 from aws_emulator_shim.schema import main as schema_main
 
 ROOT = Path(__file__).resolve().parents[2]
