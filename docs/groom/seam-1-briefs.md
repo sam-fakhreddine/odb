@@ -47,3 +47,15 @@ Feed field names/check IDs and unknown/provenance semantics into tracing,
 Organizations, capability and CI outlines. Do not groom those future seams.
 Next evidence slices separately add CLI opt-in, atomic partial reports and
 runtime provenance; no real AWS calls belong here.
+
+## Feed-forward decision: 2026-11-15
+
+Setup now provides `scripts/groom_check.py`, `make groom-check SEAM=N` and
+`scripts/gate_seam0.py` as the disposable gate pattern. Reuse its resolved
+temporary-root handling, actual interpreter/dependency recording and explicit
+non-native scope. Global CI reports stale future briefs; the active seam gate
+enforces only its own freshness. Full Git history is required.
+
+This note intentionally does not advance Groomed-at. Read the actual committed
+tooling before implementing seam 1. Its future gate must not invoke the setup
+gate's hard-coded `--seam 0` as its own freshness criterion.

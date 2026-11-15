@@ -6,7 +6,7 @@ split them into thin seams when selected, not seven monolithic changes.
 
 | Seam / feature | Spec | What | Depends on | Gate / control |
 | --- | --- | --- | --- | --- |
-| 0 | [Setup](seam-0-workflow.md) | Development contracts, freshness check, disposable baseline gate | Existing package | `make gate-seam0`; development-only branch |
+| 0, locally closed | [Setup](seam-0-workflow.md) | Development contracts, freshness check, disposable baseline gate | Existing package | `make gate-seam0`; [local evidence](seam-0-evidence.md) |
 | 1 | [Evidence contract](seam-1-evidence-contract.md) | Offline validated evidence record; no CLI behavior change yet | 0 | Planned `make gate-seam1`; evidence feature branch |
 | 2 | Outline | Observed call tracing and sequence export with fixture/AWS-check labels | Evidence IDs/contract | Planned opt-in tracing; own feature branch |
 | 3 | Outline | Collision-safe lifecycle and owned-resource recovery | Existing runtime; evidence integration | Planned opt-in managed lifecycle; own feature branch |

@@ -1,6 +1,6 @@
 # Seam 0: Workflow setup
 
-Status: groomed 2026-11-15; owner: "ok do the setup".
+Status: locally closed 2026-11-15; owner: "ok do the setup".
 Branch: `feature/seam-workflow`. Starts from the existing package baseline.
 
 ## Why
@@ -53,7 +53,21 @@ platform/interpreter verification is recorded separately, never implied.
 | Date | Turn | Commit | Result |
 | --- | --- | --- | --- |
 | 2026-11-15 | 0.1 | See Git history for this file | Initial grooming |
+| 2026-11-15 | 0.2 | `36b338031ab2` | RED: four methods, 13 assertion failures/subtests |
+| 2026-11-15 | 0.3 | `9b652081c418` | GREEN: same expected behavior; fixture branch-return repair |
+| 2026-11-15 | 0.4 | `4062371f5771` | Gate/Make/CI and packaging glue |
+| 2026-11-15 | 0.5 | `46f6f776ce6e` | Gate PASS, macOS ARM64, Python 3.11-3.14; [evidence](seam-0-evidence.md) |
 
 ## As built
 
-Pending gate. Bootstrap exception and bookkeeping grammar are in ADR 0001.
+Bootstrap exception and bookkeeping grammar are in ADR 0001. CI uses report
+mode rather than permanently gating seam 0: a closed seam must not block later
+features after a new ADR. Each active seam's own gate enforces its freshness.
+
+The checker rejects shallow repositories explicitly rather than attempting an
+incomplete history verdict. Both Make and direct Python commands are supported.
+The gate uses an archived source snapshot and fresh venv, not an emulator;
+dependency downloads can occur. Raw evidence stays ignored; durable sanitized
+results are committed separately. A temporary-directory alias issue was fixed
+within the seam. No test expectations were loosened. Other operating systems
+and hosted CI remain unverified, not represented as native/integration proof.

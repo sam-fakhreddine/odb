@@ -1,6 +1,6 @@
-Groomed-at: 4062371f5771a299d25cdf627c4489f0b4772f6f
+Groomed-at: 46f6f776ce6e92622695ac5f5f977c4b8aa759b7
 Depends-on: docs/design.md, docs/adr, docs/groom/seam-0-workflow.md
-Re-groomed: 2026-11-15; reviewed setup commits and code; CI reports future staleness, while the active seam's disposable gate enforces its freshness.
+Re-groomed: 2026-11-15; reviewed completed gate and macOS path fix; no further turn changes; closure records local scope and future freshness.
 
 # Seam 0 worker briefs
 
