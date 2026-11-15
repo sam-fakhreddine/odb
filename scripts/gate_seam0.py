@@ -26,6 +26,7 @@ def git(root, *args):
 
 
 def archive(root, destination):
+    destination = destination.resolve()
     data = subprocess.check_output(["git", "-C", str(root), "archive", "HEAD"])
     with tarfile.open(fileobj=io.BytesIO(data)) as source:
         for member in source:
