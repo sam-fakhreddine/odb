@@ -78,6 +78,17 @@ async function main() {
   assert.equal(action.with.token, "${{ secrets.RELEASE_PLEASE_TOKEN }}");
   assert.equal(action.with["config-file"], "release-please-config.json");
   assert.equal(action.with["manifest-file"], ".release-please-manifest.json");
+  const autoMerge = yaml.load(read(".github/workflows/auto-merge.yml"));
+  assert.deepEqual(autoMerge.on.pull_request_target.branches, ["main"]);
+  assert.deepEqual(autoMerge.on.pull_request_target.types, ["opened", "reopened", "synchronize", "ready_for_review"]);
+  const mergeJob = autoMerge.jobs.enable;
+  assert.match(mergeJob.if, /!github\.event\.pull_request\.draft/);
+  assert.match(mergeJob.if, /\["OWNER","MEMBER","COLLABORATOR"\]/);
+  assert.match(mergeJob.steps[0].run, /--auto --merge --match-head-commit "\$HEAD_SHA"/);
+  assert.match(mergeJob.steps[0].run, /exit 1/);
+  assert.equal(mergeJob.steps[0].env.GH_TOKEN, "${{ secrets.RELEASE_PLEASE_TOKEN }}");
+  assert.equal(mergeJob.steps[0].env.HEAD_SHA, "${{ github.event.pull_request.head.sha }}");
+  assert.ok(!mergeJob.steps.some(step => step.uses), "pull_request_target must not check out PR code");
   let pending = true;
   const fake = {
     buildPullRequests: async () => [{ version: "0.3.0" }],

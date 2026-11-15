@@ -83,6 +83,11 @@ regressions for behavior changes. Make new bridges explicit and reject
 undeclared routes. Keep package imports and CLI/configuration compatible within
 patch releases. Contributions are licensed under the repository's MIT license.
 
+Non-draft PRs to `main` from owners, members and collaborators are set to
+auto-merge once required checks pass. Other contributors' PRs require a
+maintainer to merge them. The auto-merge workflow does not check out PR code;
+it uses `RELEASE_PLEASE_TOKEN` so the resulting push can trigger workflows.
+
 ## Releases
 
 `project.version` in `pyproject.toml` is the version source of truth. Use
@@ -107,9 +112,10 @@ Manage and rotate it outside the repository.
 The manifest starts at published v0.1.0; a `fix` proposes a patch, `feat` a
 minor, and a breaking change a minor before 1.0 or a major thereafter.
 Only selected user-facing commit types appear in the changelog; breaking
-changes are still included. Review the generated diff, CI, compatibility and
-version rather than treating the proposal as a release. The workflow never
-creates a tag or GitHub release. After merging a proposal, complete the manual
+changes are still included. Proposals from trusted contributors are subject to
+the auto-merge policy above; check the resulting diff, CI, compatibility and
+version before releasing. The workflow never creates a tag or GitHub release.
+After a proposal merges, complete the manual
 tag and draft-release steps, then remove `autorelease: pending` from the merged
 proposal PR. Until the label is removed, release-please blocks later proposals.
 Do not remove it before verifying the correct tag exists.
