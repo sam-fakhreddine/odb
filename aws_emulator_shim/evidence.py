@@ -8,6 +8,7 @@ observations can never be reported as a native, AWS-verified pass.
 """
 
 from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 from typing import Annotated, Literal
 
 from pydantic import (
@@ -55,12 +56,10 @@ class EvidenceRecord(StrictContract):
         return value
 
 
+@dataclass(frozen=True)
 class EvidenceIssue:
-    __slots__ = ("code", "path")
-
-    def __init__(self, path: tuple[str | int, ...], code: str) -> None:
-        self.path = path
-        self.code = code
+    path: tuple[str | int, ...]
+    code: str
 
 
 class EvidenceError(ValueError):
