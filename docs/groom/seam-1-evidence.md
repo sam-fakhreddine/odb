@@ -1,6 +1,6 @@
 # Seam 1: Offline evidence contract evidence
 
-Date: 2026-11-15. Tested commit: `a8ddeff49412019ed949b158420a8e5bd1565534`.
+Date: 2026-11-15. Tested commit: `4c0b6c9543ffcc76e4984e1d2896d68a85552d87`.
 Environment: macOS ARM64, Python 3.15.1. These are local results, not hosted CI
 results and not real AWS or native-emulator verification.
 
@@ -13,7 +13,7 @@ the committed branch tip:
 
 | Python | Evidence directory | Result |
 | --- | --- | --- |
-| 3.15.1 | `seam1-20261115T234512Z-1a86f695` | PASS |
+| 3.15.1 | `seam1-20261115T235155Z-f2181851` | PASS |
 
 Seventeen steps passed: freshness, disposable archive, lint, the offline suite,
 manifest and evidence structural-schema drift, strict static contracts, build,
