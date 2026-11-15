@@ -14,8 +14,9 @@ all plans now.
 
 ```sh
 make groom-check PYTHON=.venv/bin/python        # report; stale plans warn
-make groom-check SEAM=0 PYTHON=.venv/bin/python # selected seam must be fresh
-make gate-seam0 PYTHON=.venv/bin/python         # clean committed source only
+make groom-check SEAM=8 PYTHON=.venv/bin/python # selected seam must be fresh
+make gate-seam8 PYTHON=.venv/bin/python         # clean committed source only
+make type-check schema-check PYTHON=.venv/bin/python
 ```
 
 The checker reads committed HEAD and needs complete Git history. Fetch full
@@ -34,6 +35,12 @@ to retain logs elsewhere. Default evidence is ignored under `.gate-evidence/`;
 keep sanitized durable copies for handoff. The disposable workspace is cleaned
 up automatically. This gate is offline with respect to AWS, not dependency
 downloads; dependency versions and the tested commit are recorded.
+
+The typed-contract gate shares `scripts/gate_seam0.py` with setup, selecting
+`--seam 8` instead of 0. It additionally checks generated schema drift, positive
+strict-mypy types, four deliberate type errors, the packaged `py.typed` marker,
+and isolated installed-wheel consumers. Existing `make gate-seam0` still selects
+the setup brief; closed seam 0 is not a permanent freshness prerequisite.
 
 Core changes use separate assertion-failing RED and passing GREEN commits.
 Tests have literal fixtures, `Catches:` docstrings and a declared budget.
@@ -56,9 +63,18 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -e '.[dev]'
 .venv/bin/python -m ruff check .
 .venv/bin/python -m unittest discover -s tests/unit -v
+.venv/bin/python scripts/check_types.py
+.venv/bin/python -m aws_emulator_shim.schema --check docs/schemas/manifest-v1.schema.json
 .venv/bin/python -m build
 .venv/bin/python -m twine check dist/*
 ```
+
+New external contracts derive from the strict Pydantic model policy in
+ADR 0004. Annotate fields once, generate structural JSON Schema, and separately
+test semantic relationships. Add each new module to `[tool.mypy].files`; keep
+strict checks and the typed consumer negative controls. The legacy runtime and
+SDK boundary are not yet fully annotated. Never conceal that gap with `Any`
+casts, ignored missing imports or a claim that a schema proves AWS behavior.
 
 For emulator changes, also run the seven real integration tests with an existing
 local image, and record the exact image/version, command and result:

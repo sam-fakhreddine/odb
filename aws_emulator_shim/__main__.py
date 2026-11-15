@@ -12,10 +12,12 @@ def main():
     parser.add_argument("--image", help="Existing local image; never pulled automatically")
     parser.add_argument("--engine", choices=("podman", "docker"))
     parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument("--strict-manifest", action="store_true", help="Validate the strict typed inventory contract")
     args = parser.parse_args()
     accounts = {}
     with Harness(
         args.manifest, seed=args.seed, image=args.image, engine=args.engine,
+        strict_manifest=args.strict_manifest,
     ) as harness:
         prefix = harness.manifest.get("namespace", "emulator-shim")
         for name in harness.accounts:

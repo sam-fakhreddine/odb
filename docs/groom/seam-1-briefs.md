@@ -59,3 +59,13 @@ enforces only its own freshness. Full Git history is required.
 This note intentionally does not advance Groomed-at. Read the actual committed
 tooling before implementing seam 1. Its future gate must not invoke the setup
 gate's hard-coded `--seam 0` as its own freshness criterion.
+
+## Feed-forward decision: 2026-11-15, schema first
+
+Owner: "while we are early can we do a strongly typed and ZOD style first".
+ADR 0004 inserts typed-contract seam 8 before this seam. Supersede 1.2's
+standard-library-only model proposal with strict Pydantic contracts and extend
+the new mypy/schema gates when evidence starts. Reuse shared model configuration
+and safe error conventions rather than independently choosing another validator.
+Do not treat generated structural JSON Schema as cross-record semantic proof.
+This is feed-forward only; Groomed-at stays unchanged until seam 1 starts.

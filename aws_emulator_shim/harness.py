@@ -8,6 +8,7 @@ import time
 from contextlib import ExitStack
 from pathlib import Path
 
+from .contracts import Manifest, load_manifest, parse_manifest
 from .runtime import Emulator
 
 
@@ -16,13 +17,23 @@ class Harness:
 
     def __init__(
         self, manifest, seed, clock=time.time, *,
-        image=None, runtime_images=None, engine=None,
+        image=None, runtime_images=None, engine=None, strict_manifest: bool = False,
     ):
-        self.manifest = (
-            copy.deepcopy(manifest)
-            if isinstance(manifest, dict)
-            else json.loads(Path(manifest).read_text())
-        )
+        self.inventory: Manifest | None = None
+        if type(strict_manifest) is not bool:
+            raise TypeError("strict_manifest must be a boolean")
+        if strict_manifest:
+            self.inventory = (
+                parse_manifest(manifest) if isinstance(manifest, (dict, Manifest))
+                else load_manifest(manifest)
+            )
+            self.manifest = self.inventory.model_dump(mode="json", exclude_none=True)
+        else:
+            self.manifest = (
+                copy.deepcopy(manifest)
+                if isinstance(manifest, dict)
+                else json.loads(Path(manifest).read_text())
+            )
         self.clock = clock
         self.random = random.Random(seed)
         self.seed = seed

@@ -34,3 +34,11 @@ explicitly. Run each supported interpreter in CI; platforms not run locally
 remain unverified. Network package installation is not an AWS runtime call.
 Do not silently expand the platform matrix or add expensive native integration
 to ordinary offline CI.
+
+## 2026-11-15: Typed foundation amendment
+
+The standard-library constraint above applies to the setup checker, not every
+future runtime feature. ADR 0004 introduces Pydantic and static/schema checking
+for the typed-contract seam. Reuse this disposable gate with the active seam's
+freshness selector and additional typed-contract checks; do not permanently
+gate closed seam 0 when evaluating a later seam.

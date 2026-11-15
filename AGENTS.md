@@ -12,6 +12,9 @@ seam's spec and briefs before editing. Decisions live in `docs/adr/`.
   commit and check again. Re-groom only the seam that is starting.
 - Deliver thin, observable slices. Every Done-when outcome has an acceptance
   test; every turn names a layer, test and test budget before implementation.
+- New boundary contracts follow ADR 0004: strict Pydantic models, generated
+  schemas, and explicit strict-mypy targets. Extend checks with each seam; do
+  not claim legacy SDK code is typed or replace semantic validation with schema-only checks.
 - Core logic and trust boundaries use separate RED and GREEN commits from the
   same run. Add a callable no-op stub if necessary so RED fails on assertions,
   not missing imports. Use literal input/expected rows; tests have a `Catches:`

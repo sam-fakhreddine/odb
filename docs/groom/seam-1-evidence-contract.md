@@ -52,3 +52,10 @@ no network calls, CLI output changes, runtime tracing or AWS validation.
 
 Not implemented. Follow-on evidence seams will wire opt-in CLI reporting,
 runtime provenance, partial failure reports and atomic writing independently.
+
+## Feed-forward: 2026-11-15
+
+ADR 0004 inserts typed foundation seam 8 before this seam following the owner's
+schema-first direction. At re-groom, replace the standard-library-only proposal
+with the established strict Pydantic model/type/schema conventions. Evidence
+remains unimplemented; this note does not refresh its stale briefs.

@@ -28,7 +28,8 @@ The existing package, CLI, examples and their limitations remain the baseline.
 
 ## Direction
 
-Establish evidence before growing claims: structured reports, observed traces,
+Establish strict typed inventory contracts first (ADR 0004), then evidence
+before growing claims: structured reports, observed traces,
 reliable lifecycle, Organizations fixtures, native capability probes, pinned
 integration CI and separately authorized AWS comparisons. Retire adapters only
 after reviewed native positive and negative controls pass.
@@ -46,6 +47,7 @@ Runtime production code is unchanged by the seam-workflow setup.
 - 2026-11-15: "This is how develop in here", with the supplied
   "Working in seams, with just-in-time re-grooming" workflow.
 - 2026-11-15: "ok do the setup".
+- 2026-11-15: "while we are early can we do a strongly typed and ZOD style first".
 
 The exact implementation interfaces in future briefs are proposals until
 implemented and recorded. This document changes through a recorded decision,

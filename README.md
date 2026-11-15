@@ -132,6 +132,43 @@ destination bytes are rejected. Revoking a grant prevents subsequent copies
 but does not delete retained evidence. Failed or unconfirmed writes remain
 `attempted`, never `completed`.
 
+### Strict typed inventories (unreleased)
+
+The development source adds a Python schema-first boundary using Pydantic 2,
+not a TypeScript rewrite. The published v0.1.0 release assets do not include it.
+Opt in per harness or with `odb examples/accounts.json --strict-manifest`.
+Legacy parsing remains the default.
+
+```python
+from aws_emulator_shim import Harness, load_manifest
+
+inventory = load_manifest("examples/accounts.json")  # offline validation
+port: int = inventory.accounts["app"].port
+harness = Harness(inventory, seed=7, image="local-test", strict_manifest=True)
+# Construction validates; only entering the harness starts emulator processes.
+```
+
+`Account`, `Route` and `Manifest` provide static field types, strict runtime
+validation and immutable model/mapping snapshots. `parse_manifest(data)` accepts
+unknown in-memory data. Ports must be integers, not strings, floats or booleans;
+unknown fields, duplicate IDs/ports and undeclared routes are rejected. Only
+`events`/`evidence` bridge names are supported in strict mode. Schema version 1
+is the default when omitted. Image/engine environment precedence is unchanged.
+
+`load_manifest` rejects duplicate JSON keys, malformed UTF-8/JSON and non-finite
+numbers. Public `ManifestError.issues` contain safe field paths/error codes, not
+rejected values; dynamic names become `*`. Use these parsers at untrusted
+boundaries, not Pydantic's trusted `model_construct`/`model_copy` escape hatches
+or raw exception-detail dumps.
+
+The [generated JSON Schema](docs/schemas/manifest-v1.schema.json) describes
+structural rules. Cross-record uniqueness and route relationships additionally
+require `parse_manifest`/`load_manifest`; JSON Schema alone is not sufficient.
+Regenerate with `python -m aws_emulator_shim.schema --output docs/schemas/manifest-v1.schema.json`.
+Strict mypy currently covers contracts/schema and consumer fixtures, **not all
+legacy harness/runtime SDK code**. Subsequent seams extend that scope before
+adding new boundary models.
+
 ## Tests
 
 Development follows [thin seams with just-in-time grooming](AGENTS.md).
@@ -145,6 +182,8 @@ Fast CI checks need no emulator, container engine, AWS account or credentials:
 python3 -m pip install -e '.[dev]'
 python3 -m ruff check .
 python3 -m unittest discover -s tests/unit -v
+python3 scripts/check_types.py
+python3 -m aws_emulator_shim.schema --check docs/schemas/manifest-v1.schema.json
 python3 -m build
 python3 -m twine check dist/*
 ```
