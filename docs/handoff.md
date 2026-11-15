@@ -1,15 +1,16 @@
 # ODB handoff
 
-Date: 2026-11-15. Active branch: `feature/auto-semver`.
+Date: 2026-11-15. Active branch: `feature/typed-contracts-main`.
 
 ## Current work
 
-Seam 10 adds opt-in release-please version proposals, without automated tags
-or releases. See [seam 10 evidence](groom/seam-10-evidence.md) and
-`CONTRIBUTING.md` for prerequisites and the manual pending-label handoff.
-It is a separate local branch; no GitHub workflow has been run. Read
-`AGENTS.md`, the design/ADRs and `docs/groom/index.md`. Seam 1 is intentionally
-stale on this branch. Other runtime feature branches remain separate.
+Seam 8 recovers the local typed inventory implementation on current main for
+issue `sam-fakhreddine/odb#7`. ADR 0004 retains Python and chooses Pydantic
+with strict static checks. Seam 1 remains stale until selected.
+
+Seam 10's proposal workflow is merged and has created a 0.2.0 proposal.
+Tags and releases remain manual; see `CONTRIBUTING.md` for the pending-label
+handoff. Read `AGENTS.md`, the design/ADRs and `docs/groom/index.md`.
 
 ## Resume
 

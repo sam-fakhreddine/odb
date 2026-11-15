@@ -1,13 +1,14 @@
 # ODB seam index
 
 Owner, 2026-11-15: "ok do the setup". Workflow: `AGENTS.md` and ADR 0001.
-Only seams 0, 1 and 10 are fully groomed. Features 2-7 are deliberately outlines;
+Seams 0, 1, 8 and 10 have briefs. Features 2-7 are deliberately outlines;
 split them into thin seams when selected, not seven monolithic changes.
 
 | Seam / feature | Spec | What | Depends on | Gate / control |
 | --- | --- | --- | --- | --- |
 | 0, locally closed | [Setup](seam-0-workflow.md) | Development contracts, freshness check, disposable baseline gate | Existing package | `make gate-seam0`; [local evidence](seam-0-evidence.md) |
-| 1 | [Evidence contract](seam-1-evidence-contract.md) | Offline validated evidence record; no CLI behavior change yet | 0 | Planned `make gate-seam1`; evidence feature branch |
+| 8 | [Typed foundation](seam-8-typed-contracts.md) | Strict Python models, generated schema and static checks first | 0 | Planned `make gate-seam8`; `--strict-manifest`; `feature/typed-contracts-main` |
+| 1 | [Evidence contract](seam-1-evidence-contract.md) | Offline validated evidence record; no CLI behavior change yet | 0, 8 | Planned `make gate-seam1`; evidence feature branch |
 | 2 | Outline | Observed call tracing and sequence export with fixture/AWS-check labels | Evidence IDs/contract | Planned opt-in tracing; own feature branch |
 | 3 | Outline | Collision-safe lifecycle and owned-resource recovery | Existing runtime; evidence integration | Planned opt-in managed lifecycle; own feature branch |
 | 4 | Outline | Validated local Organizations snapshot and explicit read fixture | Account binding contract | Planned off/fixture mode; own feature branch |
@@ -15,6 +16,11 @@ split them into thin seams when selected, not seven monolithic changes.
 | 6 | Outline | Pinned native integration CI | Package acquisition; scenario/probe contracts | Planned manual workflow; own feature branch |
 | 7 | Outline | Bounded real-AWS scenario comparison | Scenario/evidence contracts; separate authorization | Planned separate command; own feature branch |
 | 10, locally closed | [Automatic version proposals](seam-10-autosemver.md) | Opt-in semantic version PRs, no automatic releases | Existing release and workflow setup | [Local evidence](seam-10-evidence.md); `feature/auto-semver` |
+
+Owner, 2026-11-15: "while we are early can we do a strongly typed and ZOD style first".
+Stable seam identifiers are not sequence numbers: insert 8 before 1, without
+renumbering historical records. ADR 0004 retains Python with Pydantic, not a
+TypeScript migration.
 
 Preferred integration order is the table order, not an assertion that all
 previous rows are prerequisites. Lifecycle, Organizations validation and CI
