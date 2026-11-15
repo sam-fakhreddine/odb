@@ -1,9 +1,10 @@
-Groomed-at: 59768b8873bb748d19ec61c39a830308f53099c9
+Groomed-at: da73d88bf6a17db4f67b3754f9bc1349a774dcb3
 Depends-on: docs/design.md, docs/adr, docs/groom/seam-8-typed-contracts.md, aws_emulator_shim, pyproject.toml, scripts/gate_seam0.py, scripts/check_types.py, tests/unit, tests/typing, docs/schemas/manifest-v1.schema.json, .github/workflows/ci.yml, Makefile
 Re-groomed: 2026-11-15; inspected current main, inventory validation, CLI, release workflow and existing local implementation before starting issue 7.
 Re-groomed: 2026-11-15; account for the assertion-only RED commit and unchanged acceptance tables.
 Re-groomed: 2026-11-15; reviewed GREEN contracts and the current gate; preserve seam 10 while adding seam 8 schema and isolated-wheel typing.
 Re-groomed: 2026-11-15; reviewed recovered implementation and four passing interpreter gates; close locally against current main.
+Re-groomed: 2026-11-15; reproduced merged PR 17's unmatched account/role key schema bypass; extend the existing structural acceptance table, then close mappings through model metadata and regenerate schema.
 
 # Seam 8 worker briefs
 
@@ -60,3 +61,12 @@ evidence briefs without advancing their Groomed-at baseline.
 Locally closed against `59768b8873bb748d19ec61c39a830308f53099c9`.
 See `seam-8-evidence.md`. Strict typing covers new contracts and their
 consumers, not the entire legacy runtime or AWS behavior.
+
+## Mapping-key follow-up
+
+Layer: structural contract boundary. Test budget: extend the existing schema
+test method with account/role mapping rows, no new test methods. Record
+assertion-failing RED and GREEN separately. Reject unmatched names with both
+valid and invalid values, retain valid names and value validation, and check
+both direct model generation and the checked-in schema. Keep legacy behavior
+and semantic validation unchanged. Run the seam-8 disposable gate.
