@@ -9,6 +9,11 @@ ADR 0004 retains Python and chooses Pydantic with strict static checks.
 `strict_manifest=True` and `--strict-manifest` are opt-in; legacy defaults
 remain unchanged. Seam 1 remains stale until selected.
 
+Follow-up to merged `sam-fakhreddine/odb#17`: account/role structural schemas
+now reject unmatched mapping keys, including keys with null values. Model
+metadata drives the regenerated schema. The correction is committed locally
+but not pushed; see the mapping-key section in seam-8 evidence.
+
 Seam 10's proposal workflow is merged and has created a 0.2.0 proposal.
 Tags and releases remain manual; see `CONTRIBUTING.md` for the pending-label
 handoff. Read `AGENTS.md`, the design/ADRs and `docs/groom/index.md`.
@@ -21,6 +26,9 @@ only that seam, commit and recheck. No real-AWS execution, push, PR or release
 is authorized by this handoff. Pending owner tasks are in `docs/human-tasks.md`.
 
 ## Evidence
+
+The mapping-key correction passed the complete local seam-8 disposable gate
+on Python 3.12.13 at `4f90fc95ebdc57292c94830c5bc983547bfb6de3`.
 
 See [typed-contract evidence](groom/seam-8-evidence.md): the clean disposable
 gate passed on macOS ARM64, Python 3.11-3.14 at

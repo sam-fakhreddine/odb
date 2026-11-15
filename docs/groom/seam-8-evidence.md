@@ -26,3 +26,22 @@ policy tests also passed separately after reconciling the two gate variants.
 Closure documentation follows the tested commit. Strict mode is opt-in; its
 schema does not replace semantic validation. No emulator or AWS call, hosted CI,
 Linux or Windows verification was performed for this recovery.
+
+## Mapping-key correction after PR 17
+
+Date: 2026-11-15. Tested commit:
+`4f90fc95ebdc57292c94830c5bc983547bfb6de3`.
+Environment: macOS ARM64, Python 3.12.13.
+
+RED `00141f0` reproduced 12 assertion failures: unmatched account and role
+names bypassed both direct model-generated and checked-in schemas. GREEN
+`cddacfd` adds `additionalProperties: false` through the two fields' model
+metadata and regenerates the schema. The same table now rejects unmatched
+names with valid or null values and retains valid names and value validation.
+No new test methods or legacy behavior changes were needed.
+
+The first disposable gate stopped on an abbreviated grooming hash, before
+running checks. After correcting that metadata, the complete seam-8 gate
+passed: `.gate-evidence/seam8-20261115T221359Z-cb0afd45`. It covers offline
+tests, lint, schema drift, positive/negative types, builds and installed-wheel
+schema/consumer checks. No hosted CI, emulator or AWS verification was run.
