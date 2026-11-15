@@ -4,6 +4,17 @@ All notable changes are recorded here. Releases follow Semantic Versioning.
 
 ## Unreleased
 
+### Added
+
+- Strict schema-first Python inventory models with Pydantic 2, immutable
+  snapshots, safe parsing diagnostics and generated versioned JSON Schema.
+  Opt in with `Harness(..., strict_manifest=True)` or `--strict-manifest`;
+  legacy defaults and published v0.1.0 assets remain unchanged.
+- Strict mypy checks with positive/four-error negative consumers and a
+  packaged `py.typed` marker. The check scope is contracts/schema, not the
+  entire legacy runtime. Offline CI and the selected seam gate detect schema
+  drift and verify typed consumers against an isolated installed wheel.
+
 ### Documentation
 
 - Establish seam development contracts, ADRs, setup/evidence grooming, handoff

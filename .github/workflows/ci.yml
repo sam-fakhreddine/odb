@@ -36,6 +36,8 @@ jobs:
       - run: python scripts/groom_check.py
       - run: python -m ruff check .
       - run: python -m unittest discover -s tests/unit -v
+      - run: python scripts/check_types.py
+      - run: python -m aws_emulator_shim.schema --check docs/schemas/manifest-v1.schema.json
 
   package:
     name: Build distributions
@@ -74,12 +76,19 @@ jobs:
       - name: Install and smoke-test wheel outside checkout
         run: |
           python -m venv "$RUNNER_TEMP/odb-wheel"
-          "$RUNNER_TEMP/odb-wheel/bin/python" -m pip install dist/*.whl
+          for wheel in dist/*.whl; do
+            "$RUNNER_TEMP/odb-wheel/bin/python" -m pip install "${wheel}[dev]"
+          done
+          source_root="$PWD"
           cd "$RUNNER_TEMP"
           "$RUNNER_TEMP/odb-wheel/bin/odb" --help
           "$RUNNER_TEMP/odb-wheel/bin/aws-emulator-shim" --help
           "$RUNNER_TEMP/odb-wheel/bin/python" -c \
-            'from aws_emulator_shim import Emulator, Harness'
+            'from aws_emulator_shim import Emulator, Harness, Manifest, parse_manifest'
+          "$RUNNER_TEMP/odb-wheel/bin/python" \
+            "$source_root/scripts/check_types.py" --installed
+          "$RUNNER_TEMP/odb-wheel/bin/python" -m aws_emulator_shim.schema \
+            --check "$source_root/docs/schemas/manifest-v1.schema.json"
       - name: Generate checksums
         run: |
           cd dist

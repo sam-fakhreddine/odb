@@ -1,7 +1,8 @@
-Groomed-at: 5bcb120ee388aa57d72048e05783a8a8548a59b5
+Groomed-at: 090819a5c4cb7fb1bc084e197cbcb25b7c3ad525
 Depends-on: docs/design.md, docs/adr, docs/groom/seam-8-typed-contracts.md, aws_emulator_shim, pyproject.toml, scripts/gate_seam0.py, tests/unit
 Re-groomed: 2026-11-15; inspected current main, inventory validation, CLI, release workflow and existing local implementation before starting issue 7.
 Re-groomed: 2026-11-15; account for the assertion-only RED commit and unchanged acceptance tables.
+Re-groomed: 2026-11-15; reviewed GREEN contracts and the current gate; preserve seam 10 while adding seam 8 schema and isolated-wheel typing.
 
 # Seam 8 worker briefs
 

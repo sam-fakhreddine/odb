@@ -9,6 +9,7 @@ from unittest.mock import patch
 from aws_emulator_shim import Harness
 from aws_emulator_shim.__main__ import main
 from aws_emulator_shim.contracts import ManifestError, load_manifest, parse_manifest
+from aws_emulator_shim.schema import main as schema_main
 
 ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = {
@@ -45,6 +46,11 @@ class TypedContractTest(unittest.TestCase):
             data["accounts"]["caller"][field] = value
             with self.subTest(field=field, value=value):
                 self.assertFalse(validator.is_valid(data))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "drift.schema.json"
+            path.write_text("{}\n")
+            with patch("builtins.print"):
+                self.assertEqual(schema_main(["--check", str(path)]), 1)
 
     def test_wrong_types_extra_fields_and_invalid_relationships_fail(self):
         """Catches: coercion, ignored fields and ambiguous/undeclared routes."""
@@ -72,6 +78,7 @@ class TypedContractTest(unittest.TestCase):
             (("accounts",), {}),
             (("region",), None),
             (("schema_version",), 2),
+            (("schema_version",), True),
             (("unknown",), "rejected-value-marker"),
         )
         for path, value in rows:
@@ -93,6 +100,9 @@ class TypedContractTest(unittest.TestCase):
         self.assertIsNotNone(manifest)
         data["accounts"]["caller"]["port"] = 9298
         self.assertEqual(manifest.accounts["caller"].port, 9297)
+        self.assertEqual(parse_manifest(manifest), manifest)
+        with self.assertRaises(ManifestError):
+            parse_manifest(manifest.model_copy(update={"region": 123}))
         for mapping in (manifest.accounts, manifest.roles, manifest.bridges):
             with self.assertRaises(TypeError):
                 mapping["injected"] = None
@@ -100,6 +110,8 @@ class TypedContractTest(unittest.TestCase):
             manifest.accounts["caller"].port = 9298
         with self.assertRaises(ValueError):
             manifest.region = "us-west-2"
+        with self.assertRaises(ValueError):
+            manifest.roles["Access"].target = "caller"
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "manifest.json"
             path.write_text(json.dumps(INVENTORY))
