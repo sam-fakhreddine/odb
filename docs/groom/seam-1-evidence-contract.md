@@ -1,8 +1,8 @@
 # Seam 1: Offline evidence contract
 
-Status: groomed ahead 2026-11-15; owner direction: "ok those arte all good",
-followed by "each is a feature branch / flag". Not started.
-Branch proposal: `feature/run-evidence`. Starts after seam 0.
+Status: implemented locally on `feature/run-evidence` 2026-11-15 for
+`sam-fakhreddine/odb#8`; contract slice only. Branch: `feature/run-evidence`.
+Re-groomed just in time against typed seam 8 before implementation.
 
 ## Why
 
@@ -47,11 +47,49 @@ no network calls, CLI output changes, runtime tracing or AWS validation.
 | Date | Turn | Commit | Result |
 | --- | --- | --- | --- |
 | 2026-11-15 | Ahead grooming | See Git history | Not started; re-groom at start |
+| 2026-11-15 | 1.0 Re-groom | `3318a8d` | FRESH `make groom-check SEAM=1` |
+| 2026-11-15 | 1.1 RED | `9d0be61` | 4 assertion failures against callable stubs |
+| 2026-11-15 | 1.2 GREEN | `a5d5d0c` | 4 acceptance tests pass; 22 offline tests pass |
+| 2026-11-15 | 1.3 Gate | see [evidence](seam-1-evidence.md) | Disposable offline gate |
 
 ## As built
 
-Not implemented. Follow-on evidence seams will wire opt-in CLI reporting,
+Implemented as strict Pydantic contracts reusing the seam-8 `StrictContract`
+configuration rather than the earlier standard-library-only proposal (ADR 0004).
+`aws_emulator_shim/evidence.py` provides `EvidenceRecord` (single-token
+identifiers and operation labels; independent `outcome`,
+`native`/`adapted`/`unknown` provenance, an `assertion` outcome kept distinct
+from the operation, an independent `aws_validation` state and a `write_state`),
+`parse_evidence_record` (strict, hidden-input diagnostics shaped like
+`ManifestError`), `aggregate_evidence` (complete and uniquely identified checks,
+separate native/adapted/unknown pass counts, uncertain writes and
+`native_verified` only for AWS-confirmed native passes) and
+`evidence_json_schema`. `schema.py` gained a `--model evidence` mode so the
+generated `docs/schemas/evidence-v1.schema.json` and the synthetic
+`docs/schemas/evidence-v1.example.json` stay drift-checked.
+
+Behavior decision: the schema and example were placed in `docs/schemas/`
+(co-located with `manifest-v1.schema.json`) rather than the provisional
+`docs/evidence-v1.schema.json` path named in the ahead-groomed plan, for
+consistency with the already-merged typed-contract layout. `parse_evidence_record`
+rejects credential/payload/diagnostic fields as unexpected extras and never
+discloses a rejected value; `schema_version` reuses the exact-integer rule.
+
+This slice changes no CLI output, makes no network or AWS calls and enables no
+runtime feature. Follow-on evidence seams will wire opt-in CLI reporting,
 runtime provenance, partial failure reports and atomic writing independently.
+
+## Feed-forward: 2026-11-15
+
+Field names and semantics to reuse downstream: `check_id` as the stable
+per-check key, `outcome`/`assertion` separation, the
+`native`/`adapted`/`unknown` provenance vocabulary and the independent
+`aws_validation` (`not_checked`/`confirmed`/`unconfirmed`) and `write_state`
+(`not_applicable`/`confirmed`/`unconfirmed`) states. Tracing (feature 2),
+Organizations (feature 4), capability probes (feature 5) and CI (feature 6)
+must emit records through this contract and must not infer AWS confirmation
+from local success or promote adapted/unknown observations to native passes.
+Evidence IDs here are contract labels, not execution proof.
 
 ## Feed-forward: 2026-11-15
 
