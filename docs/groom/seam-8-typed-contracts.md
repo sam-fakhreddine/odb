@@ -1,6 +1,6 @@
 # Seam 8: Typed inventory foundation
 
-Status: starting 2026-11-15. Branch: `feature/typed-contracts-main`, based on
+Status: locally closed 2026-11-15. Branch: `feature/typed-contracts-main`, based on
 current main. Owner direction and implementation choice
 are recorded in ADR 0004. Execution order: 0, 8, 1, then the existing outlines.
 
@@ -47,6 +47,17 @@ schema drift, builds/Twine, packaged contracts/type marker, and installed-wheel
 schema/consumer checks outside source. Retain actual dependency versions and
 interpreter/platform. Run the existing supported Python matrix locally where
 available. No emulator, AWS call or remote publishing belongs to this seam.
+
+## As built
+
+Strict `Account`, `Route` and `Manifest` models, immutable mappings, safe
+parsers, generated schema, opt-in Harness/CLI validation and a packaged type
+marker were recovered onto current main. Legacy defaults remain unchanged.
+
+Four acceptance methods were run in separate assertion-failing RED and passing
+GREEN commits. Schema drift, deliberate type failures and isolated wheel
+consumers are checked by CI and the shared disposable gate. See
+[local evidence](seam-8-evidence.md); re-groom seam 1 when selected.
 
 ## As built
 
