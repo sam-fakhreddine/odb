@@ -1,7 +1,7 @@
 # ODB seam index
 
 Owner, 2026-11-15: "ok do the setup". Workflow: `AGENTS.md` and ADR 0001.
-Only seams 0 and 1 are fully groomed. Features 2-7 are deliberately outlines;
+Only seams 0, 1 and 10 are fully groomed. Features 2-7 are deliberately outlines;
 split them into thin seams when selected, not seven monolithic changes.
 
 | Seam / feature | Spec | What | Depends on | Gate / control |
@@ -14,6 +14,7 @@ split them into thin seams when selected, not seven monolithic changes.
 | 5 | Outline | Adapter-free native capability probes with falsification | Probe contracts; evidence integration | Planned explicit probe command; own feature branch |
 | 6 | Outline | Pinned native integration CI | Package acquisition; scenario/probe contracts | Planned manual workflow; own feature branch |
 | 7 | Outline | Bounded real-AWS scenario comparison | Scenario/evidence contracts; separate authorization | Planned separate command; own feature branch |
+| 10, locally closed | [Automatic version proposals](seam-10-autosemver.md) | Opt-in semantic version PRs, no automatic releases | Existing release and workflow setup | [Local evidence](seam-10-evidence.md); `feature/auto-semver` |
 
 Preferred integration order is the table order, not an assertion that all
 previous rows are prerequisites. Lifecycle, Organizations validation and CI

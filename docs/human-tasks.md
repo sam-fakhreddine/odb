@@ -9,6 +9,7 @@ passed. No row authorizes an agent to spend money, access an account or publish.
 | H2 | Approve publication of setup/feature branches and PRs when ready | Public action and review ownership | Pending; local setup only |
 | H3 | Confirm emulator acquisition/authenticity and redistribution policy before hosted native CI | External distribution/runner policy | Pending; no native CI claim |
 | H4 | Supply only sanitized or synthetic organization inputs | Validation cannot establish that identifiers/policies are safe to publish | Pending; examples must be synthetic |
+| H5 | Decide whether to enable version proposals and configure a suitable repository secret and variable | Token and repository settings are owner-controlled; hosted behavior is unverified | Pending; proposals remain opt-in |
 
 Other Python/platform checks are automatable verification work, not human-only
 gates. Unsupported/unrun environments remain explicitly unverified.
