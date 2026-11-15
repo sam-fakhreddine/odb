@@ -1,7 +1,8 @@
-Groomed-at: 51fb1b8e3287716d756a802d4ae49946e3585f28
+Groomed-at: d093b592bec82da9a142553dbd03caf4d153de16
 Depends-on: docs/design.md, docs/adr, docs/groom/seam-10-autosemver.md, .github/workflows/ci.yml, pyproject.toml, README.md, CONTRIBUTING.md
 Re-groomed: 2026-11-15; select automatic version proposals after the v0.1.0 release.
 Re-groomed: 2026-11-15; reviewed the implemented proposal workflow and release documentation before the committed-source gate.
+Re-groomed: 2026-11-15; reviewed trusted check-gated auto-merge and release documentation.
 
 # Seam 10 worker brief
 
