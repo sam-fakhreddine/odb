@@ -8,7 +8,12 @@ from unittest.mock import patch
 
 from aws_emulator_shim import Harness
 from aws_emulator_shim.__main__ import main
-from aws_emulator_shim.contracts import ManifestError, load_manifest, parse_manifest
+from aws_emulator_shim.contracts import (
+    Manifest,
+    ManifestError,
+    load_manifest,
+    parse_manifest,
+)
 from aws_emulator_shim.schema import main as schema_main
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -46,6 +51,32 @@ class TypedContractTest(unittest.TestCase):
             data["accounts"]["caller"][field] = value
             with self.subTest(field=field, value=value):
                 self.assertFalse(validator.is_valid(data))
+        for source, mapping_schema in (
+            ("model", Manifest.model_json_schema(mode="validation")),
+            ("checked-in", schema),
+        ):
+            mapping_validator = Draft202012Validator(mapping_schema)
+            for field, valid_value in (
+                ("accounts", {"account_id": "333333333333", "port": 9299}),
+                ("roles", {"source": "caller", "target": "target"}),
+            ):
+                for name, value, expected in (
+                    ("Valid-Name_3", valid_value, True),
+                    ("Valid-Name_3", None, False),
+                    ("bad name", valid_value, False),
+                    ("bad name", None, False),
+                    ("", valid_value, False),
+                    ("bad\tname", valid_value, False),
+                ):
+                    data = copy.deepcopy(INVENTORY)
+                    data[field][name] = value
+                    with self.subTest(source=source, field=field, name=name, value=value):
+                        self.assertEqual(mapping_validator.is_valid(data), expected)
+                        if expected:
+                            self.assertIsNotNone(parse_manifest(data))
+                        else:
+                            with self.assertRaises(ManifestError):
+                                parse_manifest(data)
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "drift.schema.json"
             path.write_text("{}\n")

@@ -63,8 +63,13 @@ class Manifest(StrictContract):
     schema_version: Literal[1] = 1
     region: Name
     namespace: Namespace = "emulator-shim"
-    accounts: Annotated[Mapping[Name, Account], Field(min_length=1)]
-    roles: Mapping[Name, Route] = Field(default_factory=dict)
+    accounts: Annotated[
+        Mapping[Name, Account],
+        Field(min_length=1, json_schema_extra={"additionalProperties": False}),
+    ]
+    roles: Mapping[Name, Route] = Field(
+        default_factory=dict, json_schema_extra={"additionalProperties": False},
+    )
     bridges: Mapping[BridgeName, Route] = Field(default_factory=dict)
     image: Image | None = None
     engine: Engine | None = None

@@ -55,6 +55,7 @@
   "additionalProperties": false,
   "properties": {
     "accounts": {
+      "additionalProperties": false,
       "minProperties": 1,
       "patternProperties": {
         "^\\S+$": {
@@ -123,6 +124,7 @@
       "type": "string"
     },
     "roles": {
+      "additionalProperties": false,
       "patternProperties": {
         "^\\S+$": {
           "$ref": "#/$defs/Route"
