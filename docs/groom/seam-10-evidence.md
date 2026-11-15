@@ -23,3 +23,11 @@ This is a local offline result, not a hosted workflow run. PR creation, token
 permissions, CI triggering and the tag/draft-release handoff remain unverified
 on GitHub. No push, pull request, tag, release, emulator or AWS call was made.
 The gate tested the above commit; this evidence and handoff update follow it.
+
+## Check-gated auto-merge
+
+The committed-source gate also passed at `387f158` after adding auto-merge
+for non-draft PRs from trusted contributors. It checks the workflow guard and
+SHA-pinned merge command offline. Raw logs are retained under
+`.gate-evidence/seam0-20261115T211812Z-1096f175/`. Hosted auto-merge behavior
+was not part of this local run.
