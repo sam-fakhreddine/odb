@@ -38,7 +38,7 @@ is authorized by this handoff. Pending owner tasks are in `docs/human-tasks.md`.
 
 The seam-1 offline evidence contract passed the complete `make gate-seam1`
 disposable gate on macOS ARM64, Python 3.15.1 at
-`911632f4554f4c7ecc8e55fbc4c23a8af0adddaf`. See
+`a8ddeff49412019ed949b158420a8e5bd1565534`. See
 [seam-1 evidence](groom/seam-1-evidence.md). Hosted CI, the declared
 3.11-3.14 matrix, native emulator and real AWS were not run.
 

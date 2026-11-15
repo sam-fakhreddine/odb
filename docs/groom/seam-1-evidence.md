@@ -1,6 +1,6 @@
 # Seam 1: Offline evidence contract evidence
 
-Date: 2026-11-15. Tested commit: `911632f4554f4c7ecc8e55fbc4c23a8af0adddaf`.
+Date: 2026-11-15. Tested commit: `a8ddeff49412019ed949b158420a8e5bd1565534`.
 Environment: macOS ARM64, Python 3.15.1. These are local results, not hosted CI
 results and not real AWS or native-emulator verification.
 
@@ -8,12 +8,12 @@ The RED tests (`9d0be61`) produced four assertion failures, one per Done-when
 outcome, against callable no-op stubs. The unchanged tests passed with the GREEN
 contract (`a5d5d0c`). The complete offline unit suite is 22 tests.
 
-The clean committed-source disposable gate (`make gate-seam1`) passed at the
-closure re-groom commit:
+The clean committed-source disposable gate (`make gate-seam1`) passed against
+the committed branch tip:
 
 | Python | Evidence directory | Result |
 | --- | --- | --- |
-| 3.15.1 | `seam1-20261115T234036Z-e7011a3d` | PASS |
+| 3.15.1 | `seam1-20261115T234512Z-1a86f695` | PASS |
 
 Seventeen steps passed: freshness, disposable archive, lint, the offline suite,
 manifest and evidence structural-schema drift, strict static contracts, build,
