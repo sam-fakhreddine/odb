@@ -1,5 +1,6 @@
-Groomed-at: d24ca892cd1be89501bc9d687b87b04c9617d8a5
+Groomed-at: 4062371f5771a299d25cdf627c4489f0b4772f6f
 Depends-on: docs/design.md, docs/adr, docs/groom/seam-0-workflow.md
+Re-groomed: 2026-11-15; reviewed setup commits and code; CI reports future staleness, while the active seam's disposable gate enforces its freshness.
 
 # Seam 0 worker briefs
 
@@ -39,7 +40,8 @@ history. Keep code standard-library-only and preserve the RED expectations.
 
 Add Make commands and a Python disposable gate with a small shell entry point.
 Keep current CI check names and the supported Python matrix. Fetch full history
-for grooming, run report mode plus the setup gate-mode freshness command.
+for grooming and run report mode in CI. The selected seam gate enforces its
+own freshness; a closed setup seam must not block unrelated future feature CI.
 Ensure source distributions retain development docs/scripts; wheel stays library-only.
 Document dependencies, evidence retention and dirty/shallow history behavior.
 
