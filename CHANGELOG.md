@@ -6,6 +6,9 @@ All notable changes are recorded here. Releases follow Semantic Versioning.
 
 ### Documentation
 
+- Establish seam development contracts, ADRs, setup/evidence grooming, handoff
+  and human-task records, with a history-aware freshness check and offline
+  disposable setup gate. Proposed runtime features remain unimplemented.
 - Add two architecture infographics covering ODB/native-emulator interaction
   and the three-account example, with explicit fixture boundaries and native
   failure diagnostics. Include PNG, SVG, PDF and editable Mermaid/design pairs.
