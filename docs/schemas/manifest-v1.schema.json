@@ -1,0 +1,150 @@
+{
+  "$comment": "Structural validation only. Also use parse_manifest for unique logical account IDs/ports, declared route accounts and distinct bridge endpoints.",
+  "$defs": {
+    "Account": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "not": {
+            "const": "000000000000"
+          },
+          "pattern": "^[0-9]{12}$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "port": {
+          "maximum": 65535,
+          "minimum": 1024,
+          "title": "Port",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "account_id",
+        "port"
+      ],
+      "title": "Account",
+      "type": "object"
+    },
+    "Route": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "pattern": "^\\S+$",
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "minLength": 1,
+          "pattern": "^\\S+$",
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "target"
+      ],
+      "title": "Route",
+      "type": "object"
+    }
+  },
+  "$id": "urn:odb:manifest:1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accounts": {
+      "minProperties": 1,
+      "patternProperties": {
+        "^\\S+$": {
+          "$ref": "#/$defs/Account"
+        }
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Accounts",
+      "type": "object"
+    },
+    "bridges": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Route"
+      },
+      "propertyNames": {
+        "enum": [
+          "events",
+          "evidence"
+        ]
+      },
+      "title": "Bridges",
+      "type": "object"
+    },
+    "engine": {
+      "anyOf": [
+        {
+          "enum": [
+            "podman",
+            "docker"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Engine"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "pattern": "^[^-\\s]\\S*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image"
+    },
+    "namespace": {
+      "default": "emulator-shim",
+      "pattern": "^[a-z](?:[a-z0-9-]{0,34}[a-z0-9])?$",
+      "title": "Namespace",
+      "type": "string"
+    },
+    "region": {
+      "minLength": 1,
+      "pattern": "^\\S+$",
+      "title": "Region",
+      "type": "string"
+    },
+    "roles": {
+      "patternProperties": {
+        "^\\S+$": {
+          "$ref": "#/$defs/Route"
+        }
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Roles",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "region",
+    "accounts"
+  ],
+  "title": "Manifest",
+  "type": "object"
+}
