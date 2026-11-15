@@ -1,4 +1,4 @@
-"""Gate a clean committed setup revision in a disposable virtual environment."""
+"""Gate a clean committed revision in a disposable virtual environment."""
 
 import argparse
 import io
@@ -45,13 +45,17 @@ def archive(root, destination):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence-dir", type=Path, help="new directory for retained logs")
+    parser.add_argument("--seam", type=int, default=0, help="selected seam freshness check")
+    parser.add_argument("--release-please-root", type=Path, help="installed release-please package for seam 10")
     args = parser.parse_args(argv)
+    if args.seam == 10 and args.release_please_root is None:
+        parser.error("--seam 10 requires --release-please-root")
     root = Path(__file__).resolve().parents[1]
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     evidence = (args.evidence_dir or root / ".gate-evidence" / f"seam0-{stamp}-{uuid.uuid4().hex[:8]}").resolve()
     evidence.mkdir(parents=True, exist_ok=False)
     summary = {
-        "seam": 0, "started_at": stamp, "python": sys.version,
+        "seam": args.seam, "started_at": stamp, "python": sys.version,
         "platform": platform.platform(), "steps": [], "result": "FAIL",
         "scope": "offline setup only; no native emulator or AWS verification",
     }
@@ -85,7 +89,7 @@ def main(argv=None):
             archive(root, source)
             env["GIT_WORK_TREE"] = str(source)
             print("PASS disposable-archive", flush=True)
-            step("freshness", [sys.executable, "scripts/groom_check.py", "--seam", "0"], source, env)
+            step("freshness", [sys.executable, "scripts/groom_check.py", "--seam", str(args.seam)], source, env)
             step("create-venv", [sys.executable, "-m", "venv", str(work / "venv")], source, env)
             python = str(work / "venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python"))
             # A fresh venv is intentionally missing the project's declared dependencies.
@@ -99,6 +103,9 @@ def main(argv=None):
             step("versions", [python, "-m", "pip", "list", "--format=json"], source, env)
             step("lint", [python, "-m", "ruff", "check", "."], source, env)
             step("offline-tests", [python, "-m", "unittest", "discover", "-s", "tests/unit", "-v"], source, env)
+            if args.seam == 10:
+                env["RELEASE_PLEASE_ROOT"] = str(args.release_please_root.resolve())
+                step("release-please-tests", ["node", "tests/unit/auto_semver.cjs"], source, env)
             step("build", [python, "-m", "build", "--no-isolation"], source, env)
             distributions = sorted(source.joinpath("dist").iterdir())
             step("distribution-metadata", [python, "-m", "twine", "check", *(str(p) for p in distributions)], source, env)
