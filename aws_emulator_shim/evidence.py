@@ -157,7 +157,16 @@ def aggregate_evidence(
         and all(record.aws_validation == "confirmed" for record in records)
     )
     return EvidenceSummary(
-        run_id=next(iter(run_ids)), native_verified=native_verified, **counts,
+        schema_version=1,
+        run_id=next(iter(run_ids)),
+        native_passed=counts["native_passed"],
+        adapted_passed=counts["adapted_passed"],
+        unknown_passed=counts["unknown_passed"],
+        failed=counts["failed"],
+        not_tested=counts["not_tested"],
+        confirmed_writes=counts["confirmed_writes"],
+        uncertain_writes=counts["uncertain_writes"],
+        native_verified=native_verified,
     )
 
 

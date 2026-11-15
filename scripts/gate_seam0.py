@@ -118,6 +118,16 @@ def main(argv=None):
                     "docs/schemas/manifest-v1.schema.json",
                 ], source, env)
                 step("static-contracts", [python, "scripts/check_types.py"], source, env)
+            elif args.seam == 1:
+                step("manifest-schema", [
+                    python, "-m", "aws_emulator_shim.schema", "--check",
+                    "docs/schemas/manifest-v1.schema.json",
+                ], source, env)
+                step("evidence-schema", [
+                    python, "-m", "aws_emulator_shim.schema", "--model", "evidence", "--check",
+                    "docs/schemas/evidence-v1.schema.json",
+                ], source, env)
+                step("static-contracts", [python, "scripts/check_types.py"], source, env)
             step("build", [python, "-m", "build", "--no-isolation"], source, env)
             distributions = sorted(source.joinpath("dist").iterdir())
             step("distribution-metadata", [python, "-m", "twine", "check", *(str(p) for p in distributions)], source, env)
@@ -133,6 +143,13 @@ def main(argv=None):
                     "docs/schemas/manifest-v1.schema.json", "docs/groom/seam-8-briefs.md",
                     "tests/typing/valid.py", "tests/typing/invalid.py",
                 }
+            if args.seam == 1:
+                required |= {
+                    "scripts/check_types.py", "aws_emulator_shim/py.typed",
+                    "docs/schemas/manifest-v1.schema.json", "docs/schemas/evidence-v1.schema.json",
+                    "docs/schemas/evidence-v1.example.json", "docs/groom/seam-1-briefs.md",
+                    "tests/typing/valid.py", "tests/typing/invalid.py",
+                }
             if not required <= shipped:
                 raise GateError(f"source distribution missing workflow: {sorted(required - shipped)}")
             print("PASS source-workflow-inclusion", flush=True)
@@ -145,6 +162,14 @@ def main(argv=None):
                     } <= set(package.namelist()):
                         raise GateError("wheel missing typed contract files")
                 print("PASS wheel-typed-contract-inclusion", flush=True)
+            if args.seam == 1:
+                with zipfile.ZipFile(wheel) as package:
+                    if not {
+                        "aws_emulator_shim/py.typed", "aws_emulator_shim/evidence.py",
+                        "aws_emulator_shim/schema.py",
+                    } <= set(package.namelist()):
+                        raise GateError("wheel missing evidence contract files")
+                print("PASS wheel-evidence-contract-inclusion", flush=True)
             step("install-wheel", [python, "-m", "pip", "install", "--no-deps", "--force-reinstall", str(wheel)], work, env)
             step("odb-help", [str(Path(python).parent / ("odb.exe" if os.name == "nt" else "odb")), "--help"], work, env)
             step("alias-help", [str(Path(python).parent / ("aws-emulator-shim.exe" if os.name == "nt" else "aws-emulator-shim")), "--help"], work, env)
@@ -152,6 +177,18 @@ def main(argv=None):
                 step("installed-contract-schema", [
                     python, "-m", "aws_emulator_shim.schema", "--check",
                     str(source / "docs/schemas/manifest-v1.schema.json"),
+                ], work, env)
+                step("installed-consumer-types", [
+                    python, str(source / "scripts/check_types.py"), "--installed",
+                ], work, env)
+            if args.seam == 1:
+                step("installed-manifest-schema", [
+                    python, "-m", "aws_emulator_shim.schema", "--check",
+                    str(source / "docs/schemas/manifest-v1.schema.json"),
+                ], work, env)
+                step("installed-evidence-schema", [
+                    python, "-m", "aws_emulator_shim.schema", "--model", "evidence", "--check",
+                    str(source / "docs/schemas/evidence-v1.schema.json"),
                 ], work, env)
                 step("installed-consumer-types", [
                     python, str(source / "scripts/check_types.py"), "--installed",

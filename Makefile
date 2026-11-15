@@ -1,11 +1,14 @@
 PYTHON ?= python3
 
-.PHONY: groom-check gate-seam0 gate-seam8 type-check schema-check
+.PHONY: groom-check gate-seam0 gate-seam1 gate-seam8 type-check schema-check schema-check-evidence
 groom-check:
 	$(PYTHON) scripts/groom_check.py $(if $(SEAM),--seam $(SEAM),)
 
 gate-seam0:
 	$(PYTHON) scripts/gate_seam0.py
+
+gate-seam1:
+	$(PYTHON) scripts/gate_seam0.py --seam 1
 
 gate-seam8:
 	$(PYTHON) scripts/gate_seam0.py --seam 8
@@ -15,3 +18,6 @@ type-check:
 
 schema-check:
 	$(PYTHON) -m aws_emulator_shim.schema --check docs/schemas/manifest-v1.schema.json
+
+schema-check-evidence:
+	$(PYTHON) -m aws_emulator_shim.schema --model evidence --check docs/schemas/evidence-v1.schema.json
