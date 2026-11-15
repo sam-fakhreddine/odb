@@ -14,3 +14,4 @@ result.json
 native-result.json
 SHA256SUMS
 .tokensave/
+.gate-evidence/

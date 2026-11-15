@@ -4,6 +4,49 @@ ODB is early-development MIT-licensed software. Keep changes small, document
 native versus simulated behavior, and never turn an emulator gap into a fake
 successful integration.
 
+## Seam development
+
+Read [AGENTS.md](AGENTS.md), the [product contract](docs/design.md), the
+[seam index](docs/groom/index.md), and [handoff](docs/handoff.md). Feature
+branches and opt-in controls remain independent. Later plans are re-groomed
+only when they start; a stale future plan is a warning, not a reason to rewrite
+all plans now.
+
+```sh
+make groom-check PYTHON=.venv/bin/python        # report; stale plans warn
+make groom-check SEAM=0 PYTHON=.venv/bin/python # selected seam must be fresh
+make gate-seam0 PYTHON=.venv/bin/python         # clean committed source only
+```
+
+The checker reads committed HEAD and needs complete Git history. Fetch full
+history before checking a shallow clone. Missing/malformed metadata fails in
+both modes. Dependencies are comma-separated literal repository-relative
+paths; directories include descendants. Draft edits are not a re-groom:
+commit changes and rerun. Move `Groomed-at` only after reviewing actual
+dependency commits and code; see ADR 0001 for non-cascading bookkeeping.
+
+The setup gate creates a temporary archived checkout and fresh venv, restores
+the existing declared development dependencies if missing, then runs freshness,
+lint, offline tests, builds, distribution and installed-wheel CLI checks.
+It requires Python with venv/pip and Git, not an emulator or AWS account.
+Run `python scripts/gate_seam0.py --evidence-dir /absolute/new-directory`
+to retain logs elsewhere. Default evidence is ignored under `.gate-evidence/`;
+keep sanitized durable copies for handoff. The disposable workspace is cleaned
+up automatically. This gate is offline with respect to AWS, not dependency
+downloads; dependency versions and the tested commit are recorded.
+
+Core changes use separate assertion-failing RED and passing GREEN commits.
+Tests have literal fixtures, `Catches:` docstrings and a declared budget.
+Scan staged changes before every commit, for example:
+
+```sh
+git diff --cached --no-ext-diff | gitleaks stdin --no-banner --redact
+```
+
+Record PASS/FAIL gate evidence and as-built differences in the active seam,
+then update the handoff. Unperformed human checks stay in
+`docs/human-tasks.md`, explicitly unverified.
+
 ## Development
 
 Use Python 3.11+ in a virtual environment:

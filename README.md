@@ -134,6 +134,11 @@ but does not delete retained evidence. Failed or unconfirmed writes remain
 
 ## Tests
 
+Development follows [thin seams with just-in-time grooming](AGENTS.md).
+The [seam index](docs/groom/index.md) distinguishes implemented work from future
+features; [CONTRIBUTING.md](CONTRIBUTING.md#seam-development) documents freshness
+checks and the disposable offline setup gate.
+
 Fast CI checks need no emulator, container engine, AWS account or credentials:
 
 ```sh
