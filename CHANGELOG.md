@@ -21,6 +21,19 @@ All notable changes are recorded here. Releases follow Semantic Versioning.
 - Retain the Python 3.12 package-build baseline and Python 3.11-3.14 test matrix.
   Published v0.1.0 artifacts and its tag are unchanged.
 
+## [0.2.0](https://github.com/sam-fakhreddine/odb/compare/v0.1.0...v0.2.0) (2026-11-15)
+
+
+### Features
+
+* **groom:** GREEN enforce committed seam freshness ([9b65208](https://github.com/sam-fakhreddine/odb/commit/9b652081c41853f3eedced5d977084f52e90fb93))
+* **release:** propose semantic versions without publishing ([51fb1b8](https://github.com/sam-fakhreddine/odb/commit/51fb1b8e3287716d756a802d4ae49946e3585f28))
+
+
+### Bug Fixes
+
+* **gate:** resolve macOS temporary directory aliases ([46f6f77](https://github.com/sam-fakhreddine/odb/commit/46f6f776ce6e92622695ac5f5f977c4b8aa759b7))
+
 ## 0.1.0 - 2026-11-14
 
 Initial MIT-licensed release of ODB (Ol' Dirty Bridge).
