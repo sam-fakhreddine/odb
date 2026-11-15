@@ -5,7 +5,7 @@
 [![CI](https://github.com/sam-fakhreddine/odb/actions/workflows/ci.yml/badge.svg)](https://github.com/sam-fakhreddine/odb/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**v0.1.0 - early development.** A standalone multi-account shim for <!-- x-release-please-version -->
+**v0.2.0 - early development.** A standalone multi-account shim for <!-- x-release-please-version -->
 [`aws/aws-emulator`](https://github.com/aws/aws-emulator), licensed under MIT.
 It is not affiliated with or supported by AWS.
 
@@ -46,7 +46,7 @@ Get the versioned source (including examples) from
 [GitHub Releases](https://github.com/sam-fakhreddine/odb/releases), or clone:
 
 ```sh
-git clone --branch v0.1.0 https://github.com/sam-fakhreddine/odb.git # x-release-please-version
+git clone --branch v0.2.0 https://github.com/sam-fakhreddine/odb.git # x-release-please-version
 cd odb
 ```
 
