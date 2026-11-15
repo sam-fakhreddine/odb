@@ -58,7 +58,7 @@ async function main() {
   const changelog = new Changelog({ version, changelogEntry: entry }).updateContent(read("CHANGELOG.md"));
   assert.ok(changelog.includes("replace routing") && changelog.includes("0.1.0"));
 
-  assert.equal(manifest["."], "0.1.0");
+  assert.equal(manifest["."], read("pyproject.toml").match(/^version = "([^"]+)"$/m)[1]);
   assert.equal(config["bootstrap-sha"], "0208b1992e7ef9f3518f156c0dde8431b2840a57");
   assert.equal(config["release-type"], "python");
   assert.equal(config["skip-github-release"], true);
