@@ -22,11 +22,94 @@ Security Hub/EventBridge delivery, snapshot sharing, or physical isolation.
 
 ## How it works
 
+Think of ODB as a test harness around several separate AWS Emulator
+instances, not as one emulator with real AWS accounts inside it. Each instance
+has its own service state. ODB starts the instances, gives your test a client
+for each one, and provides explicit bridges for a few interactions between
+them.
+
 ![ODB routes tests through explicit bridges and per-runtime SDK clients to independent AWS Emulator processes.](docs/diagrams/architecture_1_flowchart_emulator_interaction.png)
 
-Each runtime owns its service state and generated credentials. ODB selects the
-runtime and performs only declared cross-process operations; it does not turn
-logical account IDs into native AWS accounts.
+### 1. Describe the accounts
+
+An inventory is a JSON file that names each **logical account**, gives it a
+synthetic account ID and a local port, and optionally declares routes between
+accounts. For example, [`examples/accounts.json`](examples/accounts.json)
+defines:
+
+| Name | Logical ID | Local port |
+| --- | --- | --- |
+| `app` | `111111111111` | `9297` |
+| `security` | `222222222222` | `9298` |
+| `audit` | `333333333333` | `9299` |
+
+These IDs are labels ODB uses in routing and receipts. Every emulator process
+still reports `000000000000`; ODB does not rewrite native responses. The
+inventory also declares a simulated role from `security` to `app`, an event
+bridge from `audit` to `security`, and an evidence bridge from `app` to
+`security`.
+
+### 2. Start the harness and use account clients
+
+Entering `with Harness(...)` starts one container per account. Each process
+has its own state, generated credentials, and HTTPS endpoint. ODB creates
+account-scoped boto3 clients with the process's credentials and verified
+private certificate, then stops the containers and cleans up on exit.
+
+```python
+from aws_emulator_shim import Harness
+
+with Harness("examples/accounts.json", seed=7) as odb:
+    app_s3 = odb.client("app", "s3")
+    security_s3 = odb.client("security", "s3")
+    app_s3.create_bucket(Bucket="example-evidence")
+```
+
+The bucket is created in the `app` emulator, not the `security` emulator.
+The emulator handles the S3 request; ODB selects the client and endpoint.
+ODB-created clients are guarded to their assigned loopback endpoints, but
+independently created SDK clients are not intercepted. ODB is not a network
+sandbox. See [Setup](#setup) for the required local image and container engine.
+
+### 3. Communicate through explicit bridges
+
+The accounts do not automatically discover or communicate with each other
+through ODB. Your test calls ODB when it wants a supported interaction, and
+ODB acts as the middleman:
+
+- **Role selection:** `assume_role("security", "SecurityAccess")` checks the
+  declared route and selects the `app` emulator. It does not call STS or
+  evaluate IAM permissions.
+- **Event relay:** `relay_event("audit", payload, queue)` checks the event
+  route and sends an envelope to a destination SQS queue created through ODB.
+  It does not automatically forward EventBridge events.
+- **Evidence transfer:** after an explicit grant, `transfer(...)` reads an S3
+  object from the source emulator and writes it to the destination emulator.
+  ODB checks the bytes, records a SHA-256 receipt, and limits the copy to
+  1 MiB. This does not evaluate AWS cross-account S3, KMS, or IAM policies.
+
+For example, the event path is:
+
+```text
+Your test calls relay_event
+  -> ODB checks the audit-to-security route
+  -> ODB sends an SQS message to the security emulator
+```
+
+The [Inventory and API](#inventory-and-api) section shows the corresponding
+calls. This is like a person carrying a message between rooms, not a phone line
+the rooms can use automatically.
+
+### 4. Interpret the result
+
+A passing test shows that the tested code worked with the local emulator
+responses and any explicitly simulated ODB bridges used by that test. It does
+not prove real AWS authorization, event delivery, or cross-account resource
+sharing. ODB also has an offline evidence contract that can label
+caller-supplied observations as native, adapted, or unknown; it does not
+automatically trace every SDK call or prove the recorded operation happened.
+
+### A larger example
 
 ![Three-account example showing native CloudFront, S3 and Lambda operations alongside explicit API transport and subnet-mapping fixtures.](docs/diagrams/architecture_2_flowchart_three_account_example.png)
 
