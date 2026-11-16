@@ -12,7 +12,7 @@ from botocore.configprovider import ConstantProvider
 from botocore.session import Session as SdkSession
 
 
-def local_session(access_key, secret_key, region):
+def local_session(access_key: str, secret_key: str, region: str) -> boto3.Session:
     session = SdkSession()
     store = session.get_component("config_store")
     for key, value in (

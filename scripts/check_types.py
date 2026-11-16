@@ -20,28 +20,34 @@ def check(
         sys.executable, "-m", "mypy", "--config-file", str(config),
         "--no-incremental", "--no-pretty", "--no-error-summary", "--show-error-codes",
     ]
+    sdk_valid = valid.parent / "sdk_valid.py"
+    sdk_invalid = invalid.parent / "sdk_invalid.py"
+    positive_targets = [str(valid), str(sdk_valid)] if installed else []
     positive = subprocess.run(
-        [*command, *([str(valid)] if installed else [])],
+        [*command, *positive_targets],
         cwd=cwd, env=env, text=True, capture_output=True,
     )
     if positive.returncode:
         print(positive.stdout + positive.stderr)
         return 1
-    print("PASS strict positive consumer types")
-    negative = subprocess.run(
-        [*command, str(invalid)], cwd=cwd, env=env, text=True, capture_output=True,
-    )
-    codes = re.findall(r"error: .* \[([a-z-]+)\]$", negative.stdout, re.MULTILINE)
-    if negative.returncode != 1 or sorted(codes) != [
-        "arg-type", "arg-type", "attr-defined", "call-arg",
-    ]:
-        print("FAIL expected exactly four contract typing errors")
-        print(negative.stdout + negative.stderr)
-        return 1
-    print("PASS four deliberate typing errors rejected")
-    runtime = subprocess.run([sys.executable, str(valid)], cwd=cwd, env=env)
-    if runtime.returncode:
-        return 1
+    print("PASS strict positive SDK and contract consumers")
+    for fixture, expected in (
+        (invalid, ["arg-type", "arg-type", "attr-defined", "call-arg"]),
+        (sdk_invalid, ["arg-type", "arg-type", "call-arg"]),
+    ):
+        negative = subprocess.run(
+            [*command, str(fixture)], cwd=cwd, env=env, text=True, capture_output=True,
+        )
+        codes = re.findall(r"error: .* \[([a-z-]+)\]$", negative.stdout, re.MULTILINE)
+        if negative.returncode != 1 or sorted(codes) != expected:
+            print(f"FAIL expected exactly {len(expected)} {fixture.name} typing errors")
+            print(negative.stdout + negative.stderr)
+            return 1
+        print(f"PASS {len(expected)} deliberate {fixture.name} errors rejected")
+    for executable in (valid, sdk_valid):
+        runtime = subprocess.run([sys.executable, str(executable)], cwd=cwd, env=env)
+        if runtime.returncode:
+            return 1
     print("PASS typed consumer runtime roundtrip")
     return 0
 
@@ -69,7 +75,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print("PASS installed wheel type marker and import isolation")
     with tempfile.TemporaryDirectory(prefix="odb-consumer-") as directory:
         consumer = Path(directory)
-        for name in ("valid.py", "invalid.py"):
+        for name in ("valid.py", "invalid.py", "sdk_valid.py", "sdk_invalid.py"):
             shutil.copyfile(root / "tests/typing" / name, consumer / name)
         shutil.copyfile(root / "pyproject.toml", consumer / "pyproject.toml")
         return check(
