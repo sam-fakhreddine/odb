@@ -1,17 +1,21 @@
 # ODB handoff
 
-Date: 2026-11-15. Active branch: `feature/run-evidence`.
+Date: 2026-11-16. Active branch: `feature/sdk-test-foundation`.
 
 ## Current work
 
-Seam 1 (offline evidence contract) is locally closed on `feature/run-evidence`
-for issue `sam-fakhreddine/odb#8`. `aws_emulator_shim/evidence.py` adds strict
-Pydantic `EvidenceRecord`/`EvidenceSummary`, `parse_evidence_record`,
-`aggregate_evidence` and `evidence_json_schema` reusing the seam-8 typed
-foundation. The generated `docs/schemas/evidence-v1.schema.json` and synthetic
-example are drift-checked, the module is in the strict-mypy targets, and the new
-evidence-schema check is wired into CI and `make gate-seam1`. No CLI output
-change, network or AWS call; the contract enables no runtime feature.
+Issue `sam-fakhreddine/odb#9` (SDK typing and property-test foundations) is
+locally implemented on `feature/sdk-test-foundation`. Developer-only: boto3
+S3/SQS/STS stubs and Hypothesis added to `[dev]`, `local_session` typed
+(`boto3.Session` return) with no runtime behavior or production dependency
+change, SDK positive/negative typing consumers (three deliberate SDK errors) wired
+into `scripts/check_types.py` for source and installed-wheel, and four
+deterministic Hypothesis property tests in the offline suite. See
+[SDK foundation evidence](groom/sdk-test-foundation-evidence.md).
+
+Seam 1 (offline evidence contract) is closed and released for issue
+`sam-fakhreddine/odb#8` (`v0.2.0` backfill and `v0.3.0` tags with draft GitHub
+releases).
 
 Seam 8 is locally closed on `feature/typed-contracts-main` for issue
 `sam-fakhreddine/odb#7`; ADR 0004 retains Python and chooses Pydantic with
