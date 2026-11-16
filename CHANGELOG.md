@@ -32,6 +32,21 @@ All notable changes are recorded here. Releases follow Semantic Versioning.
 - Retain the Python 3.12 package-build baseline and Python 3.11-3.14 test matrix.
   Published v0.1.0 artifacts and its tag are unchanged.
 
+## [0.3.0](https://github.com/sam-fakhreddine/odb/compare/v0.2.0...v0.3.0) (2026-11-16)
+
+
+### Features
+
+* **evidence:** GREEN offline evidence contract ([a5d5d0c](https://github.com/sam-fakhreddine/odb/commit/a5d5d0c901c90de95bdf6aa1557cc772c1f4f296))
+* **evidence:** strict offline evidence contract (seam 1) ([d29c5f1](https://github.com/sam-fakhreddine/odb/commit/d29c5f14a6b80595c66f5d855d3a37e41220c0b7))
+* **types:** GREEN strict inventory contracts ([090819a](https://github.com/sam-fakhreddine/odb/commit/090819a5c4cb7fb1bc084e197cbcb25b7c3ad525))
+
+
+### Bug Fixes
+
+* **types:** GREEN close generated inventory mapping schemas ([cddacfd](https://github.com/sam-fakhreddine/odb/commit/cddacfd38c358245ee6f3b1de8332875869ec41d))
+* **types:** reject invalid inventory mapping keys in schema ([da382f9](https://github.com/sam-fakhreddine/odb/commit/da382f9462c18abda459d2fb507bce051dfe9b16))
+
 ## [0.2.0](https://github.com/sam-fakhreddine/odb/compare/v0.1.0...v0.2.0) (2026-11-15)
 
 
