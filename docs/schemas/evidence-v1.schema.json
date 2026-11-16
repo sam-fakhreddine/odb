@@ -1,0 +1,123 @@
+{
+  "$comment": "Structural validation only. A record is a caller-supplied claim, not proof of execution; use aggregate_evidence for unique/complete checks and the independent native/adapted/unknown and AWS-confirmed rules.",
+  "$id": "urn:odb:evidence:1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One caller-supplied observation; fields are independent and untrusted.",
+  "properties": {
+    "assertion": {
+      "default": "not_tested",
+      "enum": [
+        "passed",
+        "failed",
+        "not_tested"
+      ],
+      "title": "Assertion",
+      "type": "string"
+    },
+    "aws_validation": {
+      "default": "not_checked",
+      "enum": [
+        "not_checked",
+        "confirmed",
+        "unconfirmed"
+      ],
+      "title": "Aws Validation",
+      "type": "string"
+    },
+    "check_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Check Id",
+      "type": "string"
+    },
+    "fault_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fault Id"
+    },
+    "fixture_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fixture Id"
+    },
+    "operation": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Operation",
+      "type": "string"
+    },
+    "outcome": {
+      "enum": [
+        "passed",
+        "failed",
+        "not_tested"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "provenance": {
+      "enum": [
+        "native",
+        "adapted",
+        "unknown"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "write_state": {
+      "default": "not_applicable",
+      "enum": [
+        "not_applicable",
+        "confirmed",
+        "unconfirmed"
+      ],
+      "title": "Write State",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "check_id",
+    "operation",
+    "outcome",
+    "provenance"
+  ],
+  "title": "EvidenceRecord",
+  "type": "object"
+}

@@ -38,6 +38,7 @@ jobs:
       - run: python -m unittest discover -s tests/unit -v
       - run: python scripts/check_types.py
       - run: python -m aws_emulator_shim.schema --check docs/schemas/manifest-v1.schema.json
+      - run: python -m aws_emulator_shim.schema --model evidence --check docs/schemas/evidence-v1.schema.json
 
   package:
     name: Build distributions

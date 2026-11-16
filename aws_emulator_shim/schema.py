@@ -8,6 +8,7 @@ from pathlib import Path
 from pydantic import JsonValue
 
 from .contracts import Manifest
+from .evidence import evidence_json_schema
 
 
 def manifest_json_schema() -> dict[str, JsonValue]:
@@ -21,18 +22,25 @@ def manifest_json_schema() -> dict[str, JsonValue]:
     return schema
 
 
+SCHEMAS = {"manifest": manifest_json_schema, "evidence": evidence_json_schema}
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", type=Path, help="fail if a schema differs from the model")
     mode.add_argument("--output", type=Path, help="write schema instead of printing it")
+    parser.add_argument(
+        "--model", choices=sorted(SCHEMAS), default="manifest",
+        help="contract model to generate or check (default: manifest)",
+    )
     args = parser.parse_args(argv)
-    generated = json.dumps(manifest_json_schema(), indent=2, sort_keys=True) + "\n"
+    generated = json.dumps(SCHEMAS[args.model](), indent=2, sort_keys=True) + "\n"
     if args.check:
         if args.check.read_text(encoding="utf-8") != generated:
-            print("FAIL manifest schema drift; regenerate with --output")
+            print(f"FAIL {args.model} schema drift; regenerate with --output")
             return 1
-        print("PASS manifest schema matches models")
+        print(f"PASS {args.model} schema matches models")
     elif args.output:
         args.output.write_text(generated, encoding="utf-8")
     else:

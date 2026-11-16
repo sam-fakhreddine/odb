@@ -1,5 +1,8 @@
-Groomed-at: d24ca892cd1be89501bc9d687b87b04c9617d8a5
+Groomed-at: bdf4fb43a91bb0ae780ed8cefab364e0bc82f793
 Depends-on: docs/design.md, docs/adr, docs/groom/seam-1-evidence-contract.md, docs/groom/seam-0-briefs.md, aws_emulator_shim, tests/unit
+Re-groomed: 2026-11-15; re-groomed at seam-1 start against current main after typed seam 8 landed. Read the implemented `aws_emulator_shim/contracts.py` (StrictContract config, `parse_manifest`/`ManifestError`/`ManifestIssue` safe-diagnostic pattern, hidden-input errors), `aws_emulator_shim/schema.py` (generate/check/drift CLI), `scripts/gate_seam0.py` (disposable gate pattern and per-seam schema/typing steps), `scripts/check_types.py`, `tests/unit/test_typed_contracts.py` and `docs/schemas/manifest-v1.schema.json`. Superseded the standard-library-only proposal with strict Pydantic reuse per ADR 0004 and the feed-forward notes. Chose `docs/schemas/evidence-v1.schema.json` (co-located with the manifest schema) over the brief's provisional `docs/evidence-v1.schema.json`; this interface choice is recorded as a behavior decision in the as-built note. Reuse seam-8 gates: add the evidence module to strict mypy and add an evidence schema-drift step to the disposable gate. Four acceptance tests remain the budget.
+Re-groomed: 2026-11-15; closure. Read the RED (`9d0be61`) and GREEN (`a5d5d0c`) contracts and the gate changes (`7dad330`), then the as-built docs (`395ce3b`). Set Groomed-at to the last dependency-touching commit so the seam-1 disposable gate checks only its own freshness against HEAD.
+Re-groomed: 2026-11-15; after a style-only `EvidenceIssue` refactor (`bdf4fb4`) re-verified the offline suite, static contracts and lint; advance Groomed-at again so the seam-1 gate stays fresh.
 
 # Seam 1 worker briefs
 

@@ -51,6 +51,7 @@ aws_emulator_shim = ["py.typed"]
 python_version = "3.11"
 files = [
   "aws_emulator_shim/contracts.py",
+  "aws_emulator_shim/evidence.py",
   "aws_emulator_shim/schema.py",
   "scripts/check_types.py",
   "tests/typing/valid.py",
